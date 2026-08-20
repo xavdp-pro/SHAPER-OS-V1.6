@@ -56,6 +56,10 @@ function readTopologyManifest(workspaceCwd) {
   const candidates = [
     path.join(String(workspaceCwd || '').trim(), 'topology.json'),
     path.join(String(workspaceCwd || '').trim(), 'deps.json'),
+    path.join(process.cwd(), 'software/topology.json'),
+    path.join(process.cwd(), '../software/topology.json'),
+    path.join(process.cwd(), '../../software/topology.json'),
+    path.join(process.cwd(), '../../../software/topology.json'),
     path.join(process.cwd(), 'topology.json'),
     path.join(process.cwd(), '../../topology.json'),
     path.join(process.cwd(), '../../../topology.json'),
