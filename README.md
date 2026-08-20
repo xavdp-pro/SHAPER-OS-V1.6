@@ -139,7 +139,7 @@ Law: [`LAW.md`](./LAW.md) · [`software/RULES.md`](./software/RULES.md)
 Same idea: **foundation first, then build on top** — ERP, CRM, shop, association tool, automation — until it matches how you really work.
 
 **Looking for short- and long-term missions** — install, shape, or operate Shaper OS for your business (infra, ERP/CRM, shop, automation, voice).  
-**Contact:** [xavier@xavdp.pro](mailto:xavier@xavdp.pro) · [shaper.xavdp.pro](https://shaper.xavdp.pro)
+**Contact:** [xavier@xavdp.pro](mailto:xavier@xavdp.pro) · [LinkedIn](https://www.linkedin.com/in/xavier-de-poorter) · [shaper.xavdp.pro](https://shaper.xavdp.pro)
 
 ---
 
@@ -199,5 +199,5 @@ Full doctrine: [`software/MANIFESTO.md`](./software/MANIFESTO.md) · architectur
 
 ---
 
-**Author:** Xavier DE POORTER / XDP LLC · **Missions:** short & long term — [xavier@xavdp.pro](mailto:xavier@xavdp.pro) · **License:** [CC BY-SA 4.0](./LICENSE)  
+**Author:** Xavier DE POORTER / XDP LLC · **Missions:** short & long term — [xavier@xavdp.pro](mailto:xavier@xavdp.pro) · [LinkedIn](https://www.linkedin.com/in/xavier-de-poorter) · **License:** [CC BY-SA 4.0](./LICENSE)  
 **AI-assisted:** see [`NOTICE.md`](./NOTICE.md)
