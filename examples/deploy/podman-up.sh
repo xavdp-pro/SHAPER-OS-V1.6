@@ -154,6 +154,7 @@ if [[ "$WITH_HELM" == "1" ]]; then
     -e GROQ_ACK_MODEL="${GROQ_ACK_MODEL:-groq/compound-mini}" \
     -e APP_MODE="${APP_MODE:-demo}" \
     -e JWT_SECRET="$JWT_SECRET" \
+    -v "$UNIV/sav/opencode-ws:/data/opencode-ws:Z" \
     localhost/shaper-helm:latest
 
   TUNNEL_TOKEN_FILE="$UNIV/sav/tunnel/token"
