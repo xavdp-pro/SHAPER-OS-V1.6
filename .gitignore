@@ -17,3 +17,4 @@ software/universes/*/deploy/univ7.env
 dist/
 tmp/
 software/bricks/brick-bridge-opencode/bin/
+e2e-artifacts/
