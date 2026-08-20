@@ -92,10 +92,34 @@ export function createPcmStreamPlayer({
     return chunk;
   }
 
+  // Master output chain: dynamics compressor for punch + gain boost for loud, clear voice
+  let outputNode = ctx.destination;
+  try {
+    const compressor = ctx.createDynamicsCompressor ? ctx.createDynamicsCompressor() : null;
+    const gainNode = ctx.createGain ? ctx.createGain() : null;
+    if (compressor && gainNode) {
+      compressor.threshold.value = -20;
+      compressor.knee.value = 30;
+      compressor.ratio.value = 8;
+      compressor.attack.value = 0.003;
+      compressor.release.value = 0.25;
+      gainNode.gain.value = 1.35; // +35% volume boost for clear presence
+      compressor.connect(gainNode);
+      gainNode.connect(ctx.destination);
+      outputNode = compressor;
+    } else if (gainNode) {
+      gainNode.gain.value = 1.35;
+      gainNode.connect(ctx.destination);
+      outputNode = gainNode;
+    }
+  } catch {
+    outputNode = ctx.destination;
+  }
+
   function scheduleBuffer(buf) {
     const src = ctx.createBufferSource();
     src.buffer = buf;
-    src.connect(ctx.destination);
+    src.connect(outputNode);
 
     const now = ctx.currentTime;
     // Underrun: shift origin so karaoke waits (timestamps stay aligned with content)

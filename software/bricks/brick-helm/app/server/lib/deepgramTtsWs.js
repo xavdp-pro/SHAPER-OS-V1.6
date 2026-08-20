@@ -4,6 +4,7 @@ import { normalizeLocale } from './locale.js';
 import {
   deepgramApiKey,
   deepgramTtsModelFamily,
+  deepgramTtsSpeed,
   envDeepgramVoiceIdForLocale,
   looksLikeDeepgramVoiceId,
   stripDeepgramTags,
@@ -26,11 +27,12 @@ export async function resolveDeepgramVoiceId(locale, preferred) {
   return envDeepgramVoiceIdForLocale(locale);
 }
 
-export function deepgramTtsWebSocketUrl(voiceId) {
+export function deepgramTtsWebSocketUrl(voiceId, speed) {
   const params = new URLSearchParams({
     model: voiceId,
     encoding: 'linear16',
     sample_rate: String(DEEPGRAM_WS_SAMPLE_RATE),
+    speed: String(speed || deepgramTtsSpeed()),
   });
   return `wss://api.deepgram.com/v1/speak?${params}`;
 }

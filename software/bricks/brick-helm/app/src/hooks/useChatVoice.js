@@ -1665,6 +1665,7 @@ export function useChatVoice({
             }
           } catch (cloudErr) {
             console.warn('[TTS] Cloud synthesis failed, falling back to browser synthesis:', cloudErr.message);
+            pushToast?.(`Synthèse vocale cloud : ${cloudErr.message || 'Erreur'}, repli sur la voix locale`, { type: 'error', duration: 4000 });
           }
 
           if (!played && !s.abort.signal.aborted && replayGenRef.current === gen) {

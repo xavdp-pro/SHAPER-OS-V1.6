@@ -3,6 +3,7 @@ import {
   deepgramConfigured,
   deepgramApiKey,
   deepgramTtsModelFamily,
+  deepgramTtsSpeed,
   deepgramSttModel,
   envDeepgramVoiceIdForLocale,
   looksLikeDeepgramVoiceId,
@@ -66,6 +67,7 @@ export async function synthesizeDeepgramSpeech(text, lang, opts = {}) {
 
   const voiceId = await resolveDeepgramVoiceId(locale, opts.voiceId);
   const modelFamily = deepgramTtsModelFamily();
+  const speed = opts.speed || deepgramTtsSpeed();
 
   // WAV/linear16 — browsers play this reliably; Deepgram MP3 is raw ADTS and often stalls <audio>
   const params = new URLSearchParams({
@@ -73,6 +75,7 @@ export async function synthesizeDeepgramSpeech(text, lang, opts = {}) {
     encoding: 'linear16',
     container: 'wav',
     sample_rate: '24000',
+    speed: String(speed),
   });
 
   const res = await fetch(`${API_BASE}/speak?${params}`, {

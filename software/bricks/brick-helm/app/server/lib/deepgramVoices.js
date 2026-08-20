@@ -12,6 +12,14 @@ export const DEEPGRAM_DEFAULT_VOICES = {
 
 export const DEEPGRAM_TTS_MODEL_FAMILY = process.env.DEEPGRAM_TTS_MODEL?.trim() || 'aura-2';
 
+export function deepgramTtsSpeed() {
+  const envSpeed = parseFloat(process.env.DEEPGRAM_TTS_SPEED || '');
+  if (!Number.isNaN(envSpeed) && envSpeed >= 0.7 && envSpeed <= 1.5) {
+    return String(envSpeed);
+  }
+  return '1.06';
+}
+
 export function deepgramSttModel() {
   return process.env.DEEPGRAM_STT_MODEL?.trim() || 'nova-3';
 }
