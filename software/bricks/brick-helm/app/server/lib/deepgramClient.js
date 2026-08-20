@@ -75,7 +75,6 @@ export async function synthesizeDeepgramSpeech(text, lang, opts = {}) {
     encoding: 'linear16',
     container: 'wav',
     sample_rate: '24000',
-    speed: String(speed),
   });
 
   const res = await fetch(`${API_BASE}/speak?${params}`, {

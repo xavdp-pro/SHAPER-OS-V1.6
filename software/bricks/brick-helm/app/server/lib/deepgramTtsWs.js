@@ -27,12 +27,11 @@ export async function resolveDeepgramVoiceId(locale, preferred) {
   return envDeepgramVoiceIdForLocale(locale);
 }
 
-export function deepgramTtsWebSocketUrl(voiceId, speed) {
+export function deepgramTtsWebSocketUrl(voiceId) {
   const params = new URLSearchParams({
     model: voiceId,
     encoding: 'linear16',
     sample_rate: String(DEEPGRAM_WS_SAMPLE_RATE),
-    speed: String(speed || deepgramTtsSpeed()),
   });
   return `wss://api.deepgram.com/v1/speak?${params}`;
 }
