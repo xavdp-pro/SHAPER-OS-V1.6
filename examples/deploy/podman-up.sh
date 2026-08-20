@@ -10,8 +10,16 @@ REPO_ROOT="$(cd "$UNIV/.." && pwd)"
 SHAPER="${SHAPER_ROOT:-$REPO_ROOT/software}"
 
 if [[ ! -d "$SHAPER/packages" ]]; then
-  echo "[podman-up] software/ not found at $SHAPER" >&2
-  exit 1
+  if [[ -d "$REPO_ROOT/SHAPER-OS-V1.6/software/packages" ]]; then
+    SHAPER="$REPO_ROOT/SHAPER-OS-V1.6/software"
+  elif [[ -d "/root/SHAPER-OS-V1.6/software/packages" ]]; then
+    SHAPER="/root/SHAPER-OS-V1.6/software"
+  elif [[ -d "$UNIV/software/packages" ]]; then
+    SHAPER="$UNIV/software"
+  else
+    echo "[podman-up] software/ not found at $SHAPER" >&2
+    exit 1
+  fi
 fi
 
 ENV_FILE="${ENV_FILE:-$SHAPER/.env}"
