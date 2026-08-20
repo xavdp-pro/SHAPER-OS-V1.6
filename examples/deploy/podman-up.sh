@@ -136,7 +136,15 @@ podman run -d --name "${SLUG}-maestro" --network "$NET" --replace \
   localhost/shaper-maestro:latest
 
 if [[ "$WITH_HELM" == "1" ]]; then
-  JWT_SECRET="${JWT_SECRET:-$(openssl rand -hex 24)}"
+  mkdir -p "$UNIV/sav/helm" "$UNIV/sav/opencode-ws"
+  JWT_SECRET_FILE="$UNIV/sav/jwt_secret"
+  if [[ -f "$JWT_SECRET_FILE" ]]; then
+    JWT_SECRET="$(tr -d '\n' < "$JWT_SECRET_FILE")"
+  else
+    JWT_SECRET="${JWT_SECRET:-$(openssl rand -hex 24)}"
+    echo "$JWT_SECRET" > "$JWT_SECRET_FILE"
+  fi
+
   echo "[podman-up] helm :$HELM_PORT"
   podman run -d --name "${SLUG}-helm" --network "$NET" --replace \
     -e PORT="$HELM_PORT" \
@@ -154,6 +162,7 @@ if [[ "$WITH_HELM" == "1" ]]; then
     -e GROQ_ACK_MODEL="${GROQ_ACK_MODEL:-groq/compound-mini}" \
     -e APP_MODE="${APP_MODE:-demo}" \
     -e JWT_SECRET="$JWT_SECRET" \
+    -v "$UNIV/sav/helm:/data:Z" \
     -v "$UNIV/sav/opencode-ws:/data/opencode-ws:Z" \
     localhost/shaper-helm:latest
 
