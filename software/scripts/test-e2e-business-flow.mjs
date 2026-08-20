@@ -62,11 +62,11 @@ async function run() {
     // Step 2: Presentation & Briefing Verification
     // -------------------------------------------------------------
     console.log('\n▶ [Step 2] Testing Presentation Briefing & Active Engine Header...');
-    await page.waitForSelector('text=OpenCode', { timeout: 15000 });
-    await page.waitForSelector('text=Bonjour Xavier, je suis Zephir', { timeout: 15000 });
+    await page.getByText('OpenCode').first().waitFor({ state: 'visible', timeout: 15000 });
+    await page.getByText(/Bonjour Xavier.*je suis Zephir/i).first().waitFor({ state: 'visible', timeout: 15000 });
 
     await page.screenshot({ path: path.join(SCREENSHOT_DIR, '02-presentation-briefing.png') });
-    console.log('  ✓ Planche de présentation affichée : "Bonjour Xavier, je suis Zephir..."');
+    console.log('  ✓ Planche de présentation affichée : "Bonjour Xavier ! Je suis Zephir..."');
 
     // -------------------------------------------------------------
     // Step 3: Document Ingestion (Catalog & Sales CSV)
@@ -106,15 +106,15 @@ async function run() {
     // -------------------------------------------------------------
     console.log('\n▶ [Step 5] Testing Multi-surface Navigation (/talk & /ged)...');
     
-    // Talk Page
-    await page.goto(`${BASE_URL}/talk`, { waitUntil: 'networkidle', timeout: 15000 });
-    await page.waitForTimeout(1000);
+    // Talk Page (uses WebSocket for voice streams)
+    await page.goto(`${BASE_URL}/talk`, { waitUntil: 'domcontentloaded', timeout: 15000 });
+    await page.waitForTimeout(1500);
     await page.screenshot({ path: path.join(SCREENSHOT_DIR, '05-talk-interface.png') });
     console.log('  ✓ Interface vocale (/talk) vérifiée');
 
     // GED Page
-    await page.goto(`${BASE_URL}/ged`, { waitUntil: 'networkidle', timeout: 15000 });
-    await page.waitForTimeout(1000);
+    await page.goto(`${BASE_URL}/ged`, { waitUntil: 'domcontentloaded', timeout: 15000 });
+    await page.waitForTimeout(1500);
     await page.screenshot({ path: path.join(SCREENSHOT_DIR, '06-ged-interface.png') });
     console.log('  ✓ Interface GED (/ged) vérifiée');
 
