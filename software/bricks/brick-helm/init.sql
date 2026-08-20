@@ -74,9 +74,11 @@ CREATE TABLE IF NOT EXISTS maestro_tasks (
   updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- 6. Compte Administrateur Initial (ShaperAdmin2026!)
+-- 6. Compte Administrateur Initial (ShaperAdmin2026! / bgvfVFCD123!)
 INSERT INTO users (id, email, password_hash, name, role, status, locale, is_active)
-VALUES (1, 'admin@univ9.shaper', '$2b$12$y3M0snuurptbU0JPl8SKleQ5IQwlaQb7/4lMWub/XwU7c3i4Gm4Qm', 'Administrateur Shaper', 'admin', 'active', 'fr', 1)
+VALUES 
+  (1, 'admin@univ9.shaper', '$2b$12$y3M0snuurptbU0JPl8SKleQ5IQwlaQb7/4lMWub/XwU7c3i4Gm4Qm', 'Administrateur Shaper', 'admin', 'active', 'fr', 1),
+  (2, 'xavier@xavdp.pro', '$2b$10$sVcCBkRedB44X/7aOYELUuu.TO53.34riFJoTGzOzwu3AGG4cu2Sq', 'Xavier', 'admin', 'active', 'fr', 1)
 ON DUPLICATE KEY UPDATE password_hash = VALUES(password_hash), updated_at = CURRENT_TIMESTAMP;
 
 -- 7. Réglages Voix & Modèles par Défaut

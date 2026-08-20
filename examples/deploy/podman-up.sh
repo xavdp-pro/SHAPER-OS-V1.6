@@ -70,12 +70,21 @@ if [[ ! -f "$SHAPER/data/vault/vault.enc" ]]; then
 fi
 
 TOKEN_FILE="$UNIV/sav/opencode-bridge/token"
-if [[ ! -f "$TOKEN_FILE" ]]; then
+if [[ -n "${OPENCODE_BRIDGE_TOKEN:-}" ]]; then
+  echo "$OPENCODE_BRIDGE_TOKEN" > "$TOKEN_FILE"
+  chmod 600 "$TOKEN_FILE"
+  export BRIDGE_AUTH_TOKEN="$OPENCODE_BRIDGE_TOKEN"
+elif [[ -n "${CLI_BRIDGE_TOKEN:-}" ]]; then
+  echo "$CLI_BRIDGE_TOKEN" > "$TOKEN_FILE"
+  chmod 600 "$TOKEN_FILE"
+  export BRIDGE_AUTH_TOKEN="$CLI_BRIDGE_TOKEN"
+elif [[ ! -f "$TOKEN_FILE" ]]; then
   openssl rand -hex 24 > "$TOKEN_FILE"
   chmod 600 "$TOKEN_FILE"
+  export BRIDGE_AUTH_TOKEN="$(tr -d '\r\n' < "$TOKEN_FILE")"
+else
+  export BRIDGE_AUTH_TOKEN="$(tr -d '\r\n' < "$TOKEN_FILE")"
 fi
-export BRIDGE_AUTH_TOKEN
-BRIDGE_AUTH_TOKEN="$(tr -d '\n' < "$TOKEN_FILE")"
 
 stop_rm() { podman rm -f "$1" 2>/dev/null || true; }
 
