@@ -317,6 +317,8 @@ export function useChatVoice({
     sentenceMetaRef.current = { ...meta, applied: actual };
   }, []);
 
+  const maybeRescaleSentences = maybeRescaleWords;
+
   const appendKaraokeWords = useCallback((words) => {
     if (!words?.length) return;
     const next = karaokeWordsRef.current.concat(words);
