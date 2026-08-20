@@ -1,25 +1,130 @@
-# SHAPER OS V1.6 — complete install from one clone
+# SHAPER OS V1.6
 
-> **One repo = kit + software.** Clone this repository and follow [`START-HERE.md`](./START-HERE.md).  
-> Runnable code is in [`software/`](./software/) (packages, bricks, scripts). **No second git remote.**  
-> **No secrets in git** — agent generates vault keys; human pastes voice API keys only if needed.
+**One pillar. Your business. Your assistant.**
 
-You know Linux. You use an IDE with a capable AI agent. You do not know this project yet.
+Install once on **your** Linux machine. Then shape what you actually need — ERP, CRM, online shop, association back-office, automations, voice cockpit — with an **AI assistant dedicated to your context**, not a generic chatbot.
 
-Same philosophy as [`software/RULES.md`](./software/RULES.md): intent, perimeters, fractal bricks, DEV/TEST/PROD.  
-This version **does not relax the law**. It **sequences** it so a new operator is not blocked by a test that needs a stack that is not up yet.
+**One git clone** = full kit + runnable software → [`START-HERE.md`](./START-HERE.md)
 
-**Four chapters**
+**See it applied to real businesses:** [shaper.xavdp.pro](https://shaper.xavdp.pro)
 
-1. **Install DEV** — [`START-HERE.md`](./START-HERE.md)  
-2. **Prove** — [`PROOF.md`](./PROOF.md) (then `npm run test:live` — no skip)  
-3. **Understand** — [`CONCEPTS.md`](./CONCEPTS.md)  
-4. **Keep** — [`LIFECYCLE.md`](./LIFECYCLE.md)  
+---
 
-What we refuse to compromise: [`LAW.md`](./LAW.md)  
-Read order: [`INDEX.md`](./INDEX.md)
+## In 30 seconds
+
+| | |
+| :--- | :--- |
+| **What it is** | A small **operating system** for agents that *do work* — secrets, audit log, jobs, scheduler, optional voice console |
+| **What it is not** | A fixed CRM, a fixed ERP, or ChatGPT in a tab |
+| **What you get** | A **foundation** you own; on top, **your** tools — limited only by your process and imagination |
+| **Who it is for** | Owner, association, freelancer, small team — anyone who outgrew spreadsheets + ten SaaS tabs |
+
+You talk or type. The agent reads **your** context, acts (or queues work), logs everything, answers. Screens are optional.
+
+---
+
+## The pillar — then whatever you need
+
+Shaper OS is the **technical floor** you do not rebuild for every project:
+
+- Encrypted **vault** (API keys, mail, integrations)
+- **Audit log** (who did what, when)
+- **Job queue** + **scheduler** (background work, beats, relances)
+- **AI bridge** wired to **your** business rules (`AGENT-CONTEXT.md`)
+- Optional **operator console** + voice (`/console`) — for you, not for your end customers
+
+On that floor you — or an IDE agent — **shape the tool you lack today**:
+
+- Something **ERP-like** — stock, orders, suppliers, invoicing
+- A **CRM** — clients, pipeline, projects, mail triage, follow-ups
+- An **online shop** or catalog — products, payments, fulfillment hooks
+- **Association / NGO back-office** — members, dues, events, volunteers
+- **Automations** — imports, alerts, recurring reports, syncs between tools you keep
+- **Voice ops** — “what’s overdue?”, “queue this sync”, “summarize yesterday”
+- A **weird vertical** no SaaS fits — your exceptions stay first-class
+
+Same bricks underneath. New **universe** = new manifest + data + your rules — not a new SaaS subscription.
+
+---
+
+## Concrete examples (same pillar, different businesses)
+
+| You need… | What you shape on top | The pillar handles… |
+| :--- | :--- | :--- |
+| **Light ERP** | Orders, stock, billing, supplier CSV | Secrets, jobs, audit, scheduled sync |
+| **CRM / freelance hub** | Clients, projects, IMAP, relances | Mail beats, queue, agent, console |
+| **Boutique en ligne** | Catalog, Stripe, orders, shipping status | Vault, logger, web app (your code, your brand) |
+| **Association / club** | Members, cotisations, events, mailing lists | Scheduler, audit, optional public site separate from console |
+| **Field service (BTP, maintenance)** | Quotes, sites, photos, planning | Voice console + mobile-friendly app you build |
+| **Phone reception / booking** | Voice → slot → confirm → log | Bridge + queue + your booking app |
+| **Training / coaching business** | Courses, payments, CMS, certificates | Universe pattern + Stripe + content |
+| **“Nothing fits us”** | Exact workflow, your language, your edge cases | Fractal reuse — imagination is the limit |
+
+**Duplicate** a proven setup for a second brand or client. **Rebuild TEST from zero** to prove disaster recovery. **Tag PROD** when tests are green.
+
+Client-facing shops and portals stay **your apps** (perimeter 3). The operator cockpit stays **yours** (perimeter 2). Secrets and boot stay **boring and reliable** (perimeter 1).
+
+---
+
+## What’s in this repository
+
+```
+SHAPER-OS-V1.6/
+├── START-HERE.md, LAW.md, …     ← install kit
+├── software/                    ← packages, bricks, npm test, build scripts
+└── <your-universe>-dev/         ← you create this (config + data only)
+```
+
+**Tier-a (local DEV):** vault · logger · OpenCode bridge · queue · maestro  
+**Tier-b (optional):** Helm `/console` + voice · Cloudflare tunnel  
+
+Everything for a first install is **here** — no second private repo required (V1.6).
+
+---
+
+## Security (useful paranoia, not theatre)
+
+| We do | We don’t |
+| :--- | :--- |
+| Agent-generated vault keys; **no secrets in git** | Hardcoded API keys in scripts |
+| Encrypt secrets · log every agent action | Trust the LLM with raw passwords in chat |
+| Tests green **before** deploy; live tests **after** stack up | Skip failing tests or stub to green |
+| DEV/TEST use stubs or dedicated mailboxes | Point tests at production inboxes |
+| Data on **your** volumes / your VPS | Lock you into one vendor’s cloud |
+
+Honest scope: this stops sloppy deploys, leaked repos, and architecture drift — not a nation-state on your LAN. Voice/tier-b uses **your** Deepgram/Groq keys and tunnel token locally.
+
+Law: [`LAW.md`](./LAW.md) · [`software/RULES.md`](./software/RULES.md)
+
+---
+
+## From GitHub to your business
+
+| Here (GitHub) | There ([shaper.xavdp.pro](https://shaper.xavdp.pro)) |
+| :--- | :--- |
+| Open pillar — install, test, fork the method (CC BY-SA 4.0) | Human conversation → **your** socle shaped for **your** activity |
+| For builders and IDE agents | For owners who want a tool that fits — delegation or autonomy |
+| `git clone` + green tests | Live demo, discovery call, concrete parcours |
+
+Same idea: **foundation first, then broider** — ERP, CRM, shop, association tool, automation — until it matches how you really work.
+
+---
+
+## Quick start
+
+```bash
+git clone https://github.com/xavdp-pro/SHAPER-OS-V1.6.git
+cd SHAPER-OS-V1.6
+cp .env.example software/.env
+# IDE agent: generate VAULT_MASTER_KEY + VAULT_TOKEN — see START-HERE.md
+cd software && npm run vault:bootstrap && npm test
+bash scripts/build-all-bricks.sh
+# then universe + podman-up — full path in START-HERE.md
+```
+
+**Read order:** [`LAW.md`](./LAW.md) → [`START-HERE.md`](./START-HERE.md) → [`PROOF.md`](./PROOF.md) → [`CONCEPTS.md`](./CONCEPTS.md)
 
 ---
 
 **Author:** Xavier DE POORTER / XDP LLC · **License:** [CC BY-SA 4.0](./LICENSE)  
-**AI-assisted:** Cursor · Claude Code · Composer 2.5 · Opus 5 · Grok 4.6 · Antigravity · Gemini 3.7 Flash — see [`NOTICE.md`](./NOTICE.md).
+**AI-assisted:** see [`NOTICE.md`](./NOTICE.md)
