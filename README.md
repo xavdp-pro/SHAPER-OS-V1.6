@@ -29,7 +29,7 @@ Shaper OS is the **technical floor** you do not rebuild for every project:
 
 - Encrypted **vault** (API keys, mail, integrations)
 - **Audit log** (who did what, when)
-- **Job queue** + **scheduler** (background work, beats, relances)
+- **Job queue** + **scheduler** (background work, beats, follow-ups)
 - **AI bridge** wired to **your** business rules (`AGENT-CONTEXT.md`)
 - Optional **operator console** + voice (`/console`) — for you, not for your end customers
 
@@ -52,10 +52,10 @@ Same bricks underneath. New **universe** = new manifest + data + your rules — 
 | You need… | What you shape on top | The pillar handles… |
 | :--- | :--- | :--- |
 | **Light ERP** | Orders, stock, billing, supplier CSV | Secrets, jobs, audit, scheduled sync |
-| **CRM / freelance hub** | Clients, projects, IMAP, relances | Mail beats, queue, agent, console |
-| **Boutique en ligne** | Catalog, Stripe, orders, shipping status | Vault, logger, web app (your code, your brand) |
-| **Association / club** | Members, cotisations, events, mailing lists | Scheduler, audit, optional public site separate from console |
-| **Field service (BTP, maintenance)** | Quotes, sites, photos, planning | Voice console + mobile-friendly app you build |
+| **CRM / freelance hub** | Clients, projects, IMAP, follow-ups | Mail beats, queue, agent, console |
+| **Online shop** | Catalog, Stripe, orders, shipping status | Vault, logger, web app (your code, your brand) |
+| **Association / club** | Members, dues, events, mailing lists | Scheduler, audit, optional public site separate from console |
+| **Field service (construction, maintenance)** | Quotes, sites, photos, planning | Voice console + mobile-friendly app you build |
 | **Phone reception / booking** | Voice → slot → confirm → log | Bridge + queue + your booking app |
 | **Training / coaching business** | Courses, payments, CMS, certificates | Universe pattern + Stripe + content |
 | **“Nothing fits us”** | Exact workflow, your language, your edge cases | Fractal reuse — imagination is the limit |
@@ -102,11 +102,11 @@ Law: [`LAW.md`](./LAW.md) · [`software/RULES.md`](./software/RULES.md)
 
 | Here (GitHub) | There ([shaper.xavdp.pro](https://shaper.xavdp.pro)) |
 | :--- | :--- |
-| Open pillar — install, test, fork the method (CC BY-SA 4.0) | Human conversation → **your** socle shaped for **your** activity |
+| Open pillar — install, test, fork the method (CC BY-SA 4.0) | Human conversation → **your** foundation shaped for **your** activity |
 | For builders and IDE agents | For owners who want a tool that fits — delegation or autonomy |
-| `git clone` + green tests | Live demo, discovery call, concrete parcours |
+| `git clone` + green tests | Live demo, discovery call, concrete path forward |
 
-Same idea: **foundation first, then broider** — ERP, CRM, shop, association tool, automation — until it matches how you really work.
+Same idea: **foundation first, then build on top** — ERP, CRM, shop, association tool, automation — until it matches how you really work.
 
 ---
 
