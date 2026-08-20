@@ -9,13 +9,8 @@ describe('demoGuests', () => {
     assert.equal(capitalizeSlug(''), '');
   });
 
-  it('seeds Ivonne guest with isolated conversation', () => {
-    const ivonne = DEMO_GUESTS.find((g) => g.demoSlug === 'ivonne');
-    assert.ok(ivonne);
-    assert.equal(ivonne.conversation, 'Ivonne');
-    assert.equal(ivonne.role, 'operator');
-    assert.match(ivonne.briefing, /Ivonne/i);
-    assert.match(ivonne.briefing, /KovZu/i);
-    assert.match(ivonne.briefing, /Zephir/i);
+  it('maintains clean empty guest list in production build', () => {
+    assert.ok(Array.isArray(DEMO_GUESTS));
+    assert.equal(DEMO_GUESTS.length, 0);
   });
 });

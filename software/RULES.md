@@ -340,9 +340,13 @@ Every production architecture enforces four decoupled backup layers:
 
 ---
 
-### Rule 17: Mandatory TTS Phonetic Dictionary & Acronym Pronunciation Protocol
-* **Zero Raw Acronyms in Audio Output**: When text is dispatched to the AI TTS player (Cartesia, Deepgram, ElevenLabs), all technical names, project terms, and acronyms (`Shaper OS`, `KovZu`, `GED`, `LXC`, `CRM`, `ERP`, `PDF`, `CLI`, `API`, `TTS`, `STT`, `CPU`, `RAM`, `SSH`, `Quadlet`, `Podman`) MUST be routed through the phonetic pronunciation normalizer (`voiceTtsPronounce.js`).
-* **Phonetic Punctuation for Acronyms**: Acronyms must be punctuated with dots (e.g. `G.E.D.`, `L.X.C.`, `C.R.M.`, `P.D.F.`, `S.S.H.`) so voice synthesis models spell them out cleanly letter-by-letter rather than garbling them as pseudo-words.
-* **Brand Name Phonetic Mapping**: Brand names and English terms spoken in French/multilingual context (e.g. `Shaper OS` → `Shaper O.S.`, `KovZu` → `Kovzou`, `Podman` → `Pod-man`) must be phonetically adapted for natural, fluent auditory delivery.
-* **Markdown & Artifact Stripping for Voice**: All markdown image links `![...]`, URL targets, code fences ```` ``` ````, backticks, and raw structural symbols must be cleanly stripped before the transcript reaches the voice player to guarantee clean, noise-free speech.
+### Rule 17: Mandatory TTS Phonetic Dictionary, Acronym Expansion & Fine Word Karaoke
+* **Universal TTS Text Normalization (`ttsFormat.js`)**: When text is dispatched to the AI TTS synthesizer (Deepgram Aura, Cartesia, ElevenLabs), all text MUST be formatted via `formatTextForTts(text, locale)`:
+  * **Acronym Expansion**: Technical acronyms (`API`, `SQL`, `GED`, `URL`, `SSH`, `HTTP`, `HTTPS`, `CSV`, `PDF`, `TTS`, `STT`, `LLM`, `IA`, `UI`, `UX`, `OS`, `RAM`, `CPU`, `DB`, `IP`, `CLI`, `JSON`, `SDK`, `DNS`, etc.) are converted to hyphenated letters (`A-P-I`, `S-Q-L`, `G-E-D`, `C-S-V`, `J-S-O-N`) to force clean, natural letter-by-letter pronunciation instead of garbled phonetics.
+  * **Markdown & Artifact Stripping for Voice**: Code blocks (`` ``` ``), inline backticks, image links (`![...]`), raw markdown URLs, and emotion tags (`[calm]`, `[excited]`) are cleanly stripped from the spoken audio pipeline while preserving full rich markdown in the written chat bubble.
+  * **Locale Symbol Expansion**: Symbols like `%`, `&`, `@`, `+` are expanded into their natural locale equivalents (`pour cent`, `et`, `arobase`).
+* **Strict Fine-Grained Word-by-Word Karaoke Invariant**:
+  * **Zero Giant Block Highlighting**: Surlignage by entire sentences/paragraphs (`grain: 'sentence'`) is strictly forbidden. The player and markdown viewer MUST always enforce fine word granularity (`grain: 'word'`).
+  * **Clock-Synchronized Word Weighting**: For streaming providers without native word timestamps (e.g. Deepgram Aura), timings are computed via `estimateKaraokeWords` based on word length and punctuation weight, dynamically rescaled against actual PCM playback duration.
+  * **Fluid Visual Reading**: In `MarkdownContent.jsx` and `InlineKaraokeText.jsx`, only the exact word currently being spoken (`activeIndex`) is illuminated in real-time, providing a smooth, realistic, and responsive reading experience.
 

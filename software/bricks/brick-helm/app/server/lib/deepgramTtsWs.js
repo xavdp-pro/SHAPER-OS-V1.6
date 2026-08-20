@@ -1,6 +1,7 @@
 import WebSocket from 'ws';
 import { randomUUID } from 'crypto';
 import { normalizeLocale } from './locale.js';
+import { formatTextForTts } from './ttsFormat.js';
 import {
   deepgramApiKey,
   deepgramTtsModelFamily,
@@ -124,7 +125,7 @@ export function openDeepgramTtsContext({
     if (closed || ws.readyState !== WebSocket.OPEN) {
       throw new Error('Deepgram TTS WebSocket not open');
     }
-    const text = stripDeepgramTags(String(transcript || ''));
+    const text = formatTextForTts(String(transcript || ''), locale);
     if (!text) return;
     // Trailing space keeps word boundaries when multiple Speak land before one Flush.
     ws.send(JSON.stringify({ type: 'Speak', text: `${text} ` }));

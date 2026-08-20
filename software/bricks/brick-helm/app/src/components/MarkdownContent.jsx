@@ -126,22 +126,32 @@ function nodeText(child) {
   if (child?.props?.children != null) return nodeText(child.props.children);
   return '';
 }
-const countWords = (s) => (String(s).match(/\S+/g) || []).length;
+function cleanMarkdownForWordCount(text) {
+  return String(text || '')
+    .replace(/```[\s\S]*?```/g, ' ')
+    .replace(/`[^`]+`/g, ' ')
+    .replace(/!\[[^\]]*\]\([^)]*\)/g, ' ')
+    .replace(/\[([^\]]+)\]\([^)]*\)/g, '$1')
+    .replace(/^#{1,6}\s+/gm, '')
+    .replace(/(\*\*|__)(.*?)\1/g, '$2')
+    .replace(/(\*|_)(.*?)\1/g, '$2')
+    .replace(/^>\s+/gm, '')
+    .replace(/^[-*+]\s+/gm, '');
+}
+
+const countWords = (s) => (cleanMarkdownForWordCount(s).match(/\S+/g) || []).length;
 
 /**
- * Surligne le mot ou la phrase active DANS la prose (karaoké intégré au texte lu),
- * sans toucher au code/tableaux. Index global = offset source.
+ * Surligne le mot actif DANS la prose (karaoké intégré au texte lu),
+ * sans toucher au code/tableaux.
  */
 function proseWithKaraoke(children, node, source, karaoke) {
   if (!karaoke?.enabled || karaoke.activeIndex < 0 || !node?.position) return children;
-  const grain = karaoke.grain || 'word';
-  const active = karaoke.words?.[karaoke.activeIndex];
-  const rangeStart = grain === 'sentence' && Number.isFinite(active?.wordStart)
-    ? active.wordStart
-    : karaoke.activeIndex;
-  const rangeEnd = grain === 'sentence' && Number.isFinite(active?.wordEnd)
-    ? active.wordEnd
-    : karaoke.activeIndex + 1;
+  const targetIdx = karaoke.activeIndex;
+  const activeWord = karaoke.words?.[targetIdx];
+  const rangeStart = targetIdx;
+  const rangeEnd = targetIdx + 1;
+
   let idx = countWords(String(source || '').slice(0, node.position.start.offset));
   const arr = Array.isArray(children) ? children : [children];
   return arr.map((child, i) => {
@@ -157,8 +167,8 @@ function proseWithKaraoke(children, node, source, karaoke) {
             return inRange ? (
               <span
                 key={j}
-                className="bg-emerald-400/30 text-white rounded px-0.5 shadow-[0_0_10px_rgba(52,211,153,0.3)]"
-                data-karaoke-active={wi === rangeStart ? 'true' : undefined}
+                className="bg-emerald-400/40 text-white font-medium rounded px-0.5 shadow-[0_0_10px_rgba(52,211,153,0.4)] transition-colors duration-100"
+                data-karaoke-active="true"
               >
                 {tok}
               </span>
@@ -167,7 +177,7 @@ function proseWithKaraoke(children, node, source, karaoke) {
         </span>
       );
     }
-    idx += countWords(nodeText(child)); // avance le compteur sur les parties formatées
+    idx += countWords(nodeText(child));
     return child;
   });
 }

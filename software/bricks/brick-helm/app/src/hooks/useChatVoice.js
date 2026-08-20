@@ -287,10 +287,10 @@ export function useChatVoice({
     httpKaraokeBaseRef.current = 0;
   }, []);
 
-  const applySentenceUnits = useCallback((text, durationSec, baseSec = 0) => {
-    const units = estimateKaraokeSentences(text, durationSec, baseSec);
-    karaokeGrainRef.current = 'sentence';
-    setKaraokeGrain('sentence');
+  const applyWordUnits = useCallback((text, durationSec, baseSec = 0) => {
+    const units = estimateKaraokeWords(text, durationSec, baseSec);
+    karaokeGrainRef.current = 'word';
+    setKaraokeGrain('word');
     karaokeWordsRef.current = units;
     setKaraokeWords(units);
     sentenceMetaRef.current = {
@@ -300,8 +300,9 @@ export function useChatVoice({
     };
   }, []);
 
-  const maybeRescaleSentences = useCallback((actualSec) => {
-    if (karaokeGrainRef.current !== 'sentence') return;
+  const applySentenceUnits = applyWordUnits;
+
+  const maybeRescaleWords = useCallback((actualSec) => {
     const meta = sentenceMetaRef.current;
     if (!meta.text) return;
     const actual = Number(actualSec);
@@ -326,12 +327,11 @@ export function useChatVoice({
   const appendKaraokeTimestamps = useCallback((batch) => {
     const words = batch?.words || [];
     if (!words.length) return;
-    const wasSentence = karaokeGrainRef.current === 'sentence';
     karaokeGrainRef.current = 'word';
     setKaraokeGrain('word');
     const starts = batch.start || [];
     const ends = batch.end || [];
-    const next = wasSentence ? [] : karaokeWordsRef.current.slice();
+    const next = karaokeWordsRef.current.slice();
     for (let i = 0; i < words.length; i++) {
       next.push({
         word: String(words[i] || ''),
@@ -348,16 +348,16 @@ export function useChatVoice({
     const tick = () => {
       const list = karaokeWordsRef.current;
       const t = getPlaybackSecRef.current();
-      if (karaokeGrainRef.current === 'sentence') {
-        const actual = streamSessionRef.current?.getDurationSeconds?.() || 0;
-        maybeRescaleSentences(actual);
+      const actual = streamSessionRef.current?.getDurationSeconds?.() || 0;
+      if (actual > 0) {
+        maybeRescaleWords(actual);
       }
       const idx = karaokeIndexAt(list, t);
       setKaraokeIndex((prev) => (prev === idx ? prev : idx));
       karaokeRafRef.current = requestAnimationFrame(tick);
     };
     karaokeRafRef.current = requestAnimationFrame(tick);
-  }, [maybeRescaleSentences]);
+  }, [maybeRescaleWords]);
 
   const armKaraokeForWsReady = useCallback((ready, speech) => {
     if (!karaokeOnRef.current || !String(speech || '').trim()) return;
@@ -366,9 +366,9 @@ export function useChatVoice({
       setKaraokeGrain('word');
       return;
     }
-    applySentenceUnits(speech, estimatedSpeechDuration(speech));
+    applyWordUnits(speech, estimatedSpeechDuration(speech));
     startKaraokeClock();
-  }, [applySentenceUnits, startKaraokeClock]);
+  }, [applyWordUnits, startKaraokeClock]);
 
   const stopAckPlayback = useCallback(() => {
     ackAbortRef.current?.abort();
@@ -450,16 +450,12 @@ export function useChatVoice({
       const el = htmlAudioRef.current;
       return baseSec + (el && Number.isFinite(el.currentTime) ? el.currentTime : duration);
     };
-    if (ttsProviderRef.current === 'cartesia') {
-      karaokeGrainRef.current = 'word';
-      setKaraokeGrain('word');
-      appendKaraokeWords(estimateKaraokeWords(text, duration, baseSec));
-    } else {
-      applySentenceUnits(text, duration, baseSec);
-    }
+    karaokeGrainRef.current = 'word';
+    setKaraokeGrain('word');
+    appendKaraokeWords(estimateKaraokeWords(text, duration, baseSec));
     startKaraokeClock();
     return duration;
-  }, [appendKaraokeWords, applySentenceUnits, startKaraokeClock]);
+  }, [appendKaraokeWords, startKaraokeClock]);
 
   const drainPlaybackQueue = useCallback(async () => {
     const s = streamRef.current;

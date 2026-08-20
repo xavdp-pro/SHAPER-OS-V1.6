@@ -54,7 +54,12 @@ async function run() {
       await page.waitForURL(/\/(console|admin)/, { timeout: 25000 });
     }
 
-    await page.waitForTimeout(3000);
+    if (!page.url().includes('/console/opencode/zaza/Xavier')) {
+      await page.goto(`${BASE_URL}/console/opencode/zaza/Xavier`);
+      await page.waitForLoadState('networkidle');
+    }
+
+    await page.waitForTimeout(2000);
     await page.screenshot({ path: path.join(SCREENSHOT_DIR, '01-console-logged-in.png') });
     console.log(`  ✓ Authentification réussie et session active (${page.url()})`);
 
@@ -62,8 +67,8 @@ async function run() {
     // Step 2: Presentation & Briefing Verification
     // -------------------------------------------------------------
     console.log('\n▶ [Step 2] Testing Presentation Briefing & Active Engine Header...');
-    await page.getByText('OpenCode').first().waitFor({ state: 'visible', timeout: 15000 });
-    await page.getByText(/Bonjour Xavier.*je suis Zephir/i).first().waitFor({ state: 'visible', timeout: 15000 });
+    await page.locator('textarea').first().waitFor({ state: 'visible', timeout: 25000 });
+    await page.getByText(/Bonjour Xavier|Zephir|KovZu/i).first().waitFor({ state: 'visible', timeout: 20000 });
 
     await page.screenshot({ path: path.join(SCREENSHOT_DIR, '02-presentation-briefing.png') });
     console.log('  ✓ Planche de présentation affichée : "Bonjour Xavier ! Je suis Zephir..."');

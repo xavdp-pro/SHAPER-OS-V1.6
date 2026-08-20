@@ -1,4 +1,5 @@
 import { normalizeLocale } from './locale.js';
+import { formatTextForTts } from './ttsFormat.js';
 import {
   deepgramConfigured,
   deepgramApiKey,
@@ -62,7 +63,7 @@ export async function listDeepgramVoices(opts = {}) {
  */
 export async function synthesizeDeepgramSpeech(text, lang, opts = {}) {
   const locale = normalizeLocale(lang);
-  const transcript = stripDeepgramTags(text);
+  const transcript = formatTextForTts(text, locale);
   if (!transcript) throw new Error('Empty TTS text');
 
   const voiceId = await resolveDeepgramVoiceId(locale, opts.voiceId);
