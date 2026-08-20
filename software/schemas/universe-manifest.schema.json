@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "SHAPER OS universe manifest",
+  "type": "object",
+  "required": ["universe", "intent", "bricks"],
+  "properties": {
+    "universe": { "type": "string" },
+    "intent": { "type": "string", "description": "Path to SPECIFIC INTENT.md" },
+    "agentDeploy": { "type": "string", "description": "Path to AGENT-DEPLOY.md for deploy agent" },
+    "description": { "type": "string" },
+    "bricks": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["ref", "intent"],
+        "properties": {
+          "ref": { "type": "string", "description": "Path to generic brick in SHAPER-OS/bricks/" },
+          "intent": { "type": "string", "description": "Path to generic brick INTENT.md" },
+          "package": { "type": "string" },
+          "role": { "type": "string" },
+          "specialize": {
+            "type": "object",
+            "properties": {
+              "how": { "type": "string" },
+              "file": { "type": "string" },
+              "instances": { "type": "array", "items": { "type": "string" } }
+            }
+          }
+        }
+      }
+    },
+    "resources": { "type": "object" },
+    "bootOrder": { "type": "array", "items": { "type": "array", "items": { "type": "string" } } }
+  }
+}

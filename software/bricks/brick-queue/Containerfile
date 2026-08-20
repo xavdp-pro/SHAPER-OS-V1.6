@@ -1,0 +1,10 @@
+FROM docker.io/library/node:20-alpine
+
+WORKDIR /app
+COPY packages/queue/ ./
+
+EXPOSE 8540
+ENV NODE_ENV=production
+ENV QUEUE_PORT=8540
+
+CMD ["node", "server.js"]

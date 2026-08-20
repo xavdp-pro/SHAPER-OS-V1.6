@@ -1,0 +1,12 @@
+{
+  "extends": "brick-agent",
+  "slug": "mail-contact-zoutik-shop",
+  "kind": "mail",
+  "mailbox": "contact@zoutik.shop",
+  "vaultKey": "secret/mail/contact-zoutik-shop",
+  "bridgeType": "agy",
+  "bridgeUrl": "http://127.0.0.1:4330",
+  "cadenceSeconds": 300,
+  "contextPath": "universes/univ7/context/AGENT-CONTEXT.md",
+  "beatMessage": "Fetch and triage new inbox messages for univ7 BTP test."
+}
