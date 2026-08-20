@@ -126,5 +126,45 @@ bash scripts/build-all-bricks.sh
 
 ---
 
+## Not much business code — it runs on written intent
+
+This repo **does** ship tested foundation code (vault, logger, queue, scheduler, bridge).  
+What it **does not** ship is a fixed ERP, CRM, or shop as thousands of lines of app logic.
+
+**Your business tool is mostly text files.** You declare *what* you want and *what must never happen*. An IDE agent (or you) reads those files and **generates or adapts the code at deploy time**. When the model improves, the intent stays; only the synthesis changes.
+
+> **Human declares intent, rules, and invariants — the agent materializes the code.**
+
+That is the core of the [manifest model](./software/MANIFESTO.md).
+
+### Manifest stack (one universe = one folder)
+
+| File | Who reads it | What it says |
+| :--- | :--- | :--- |
+| **`INTENT.md`** | Deploy agent | Objective + 4–6 invariants (security, logging, lifecycle) |
+| **`manifest.json`** | Scripts + deploy agent | Which bricks to wire, boot order, where to specialize (vault file, task JSON, volumes) |
+| **`AGENT-DEPLOY.md`** | Deploy agent | What it may do autonomously on this machine |
+| **`context/AGENT-CONTEXT.md`** | Runtime assistant | Your business rules, tone, workflows — **not** install instructions |
+
+**Deploy order:** `INTENT.md` → `manifest.json` → `AGENT-DEPLOY.md`  
+**Runtime order:** beats / jobs read `AGENT-CONTEXT.md` only
+
+### What `manifest.json` contains (summary)
+
+A universe manifest is a short JSON contract — not a codebase:
+
+- **`bricks`** — reusable engines already in `software/bricks/` (vault, logger, bridge, queue, maestro, optional helm…)
+- **`ref` + `intent`** — pointer to each brick and its own `INTENT.md`
+- **`specialize`** — *your* parameters only: vault bootstrap path, log volume, maestro tasks file, model choice
+- **`bootOrder`** — which services start together and in what sequence
+
+Example tier-a manifest: [`manifest.tier-a.json`](./manifest.tier-a.json) — five bricks, no copy of their source.
+
+New CRM, new shop, new association back-office = **new universe folder** (intent + manifest + context + data). Same pillar underneath. Containers and glue code are **disposable**; structure, data, and declared intent are **permanent**.
+
+Full doctrine: [`software/MANIFESTO.md`](./software/MANIFESTO.md) · architecture: [`software/docs/UNIVERSE-ARCHITECTURE.md`](./software/docs/UNIVERSE-ARCHITECTURE.md)
+
+---
+
 **Author:** Xavier DE POORTER / XDP LLC · **License:** [CC BY-SA 4.0](./LICENSE)  
 **AI-assisted:** see [`NOTICE.md`](./NOTICE.md)
