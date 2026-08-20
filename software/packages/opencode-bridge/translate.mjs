@@ -117,6 +117,16 @@ export function translateEvent(evt, { state: st, conversation: conv }) {
   if (type === 'message.updated') {
     const info = props.info || {};
     if (info.role === 'assistant' && info.id) st.assistantMsgs.add(info.id);
+    if (info.error) {
+      const errMsg = info.error?.data?.message || info.error?.message || (typeof info.error === 'string' ? info.error : JSON.stringify(info.error));
+      st.fullText = `⚠️ Erreur OpenCode : ${errMsg}`;
+      return [{
+        type: 'response',
+        conversation: conv,
+        composer_id: sessionID,
+        text: st.fullText,
+      }];
+    }
     return [];
   }
 

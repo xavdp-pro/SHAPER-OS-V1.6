@@ -79,6 +79,9 @@ function readBridgeToken(kind) {
 }
 
 function resolvePluginToken(kind, envToken, fallbackToken) {
+  if (process.env.OPENCODE_BRIDGE_TOKEN && (kind === 'opencode' || kind === 'generic')) return process.env.OPENCODE_BRIDGE_TOKEN;
+  if (process.env.AGY_BRIDGE_TOKEN && (kind === 'agy' || kind === 'antigravity')) return process.env.AGY_BRIDGE_TOKEN;
+  if (process.env.CURSOR_BRIDGE_TOKEN && kind === 'cursor') return process.env.CURSOR_BRIDGE_TOKEN;
   const fromFile = readBridgeToken(kind);
   if (fromFile) return fromFile;
   return envToken || fallbackToken;
@@ -86,7 +89,7 @@ function resolvePluginToken(kind, envToken, fallbackToken) {
 
 function parsePluginList() {
   const raw = process.env.AGENT_PLUGINS || '';
-  const fallbackToken = process.env.CLI_BRIDGE_TOKEN || '';
+  const fallbackToken = process.env.CLI_BRIDGE_TOKEN || process.env.OPENCODE_BRIDGE_TOKEN || '';
   const list = [];
 
   if (raw.trim()) {
@@ -106,14 +109,14 @@ function parsePluginList() {
 
   // Ensure default plugins only when AGENT_PLUGINS was not provided
   if (!raw.trim()) {
-    if (!list.some((p) => p.id === 'cursor')) {
-      const cursorUrl = (process.env.CURSOR_BRIDGE_URL || process.env.CLI_BRIDGE_URL || 'http://127.0.0.1:4310').replace(/\/$/, '');
+    if (!list.some((p) => p.id === 'opencode')) {
+      const opencodeUrl = (process.env.OPENCODE_BRIDGE_URL || process.env.CLI_BRIDGE_URL || 'http://127.0.0.1:4440').replace(/\/$/, '');
       list.push({
-        id: 'cursor',
-        name: 'Cursor',
-        url: cursorUrl,
-        token: resolvePluginToken('cursor', '', fallbackToken),
-        kind: 'cursor',
+        id: 'opencode',
+        name: 'OpenCode',
+        url: opencodeUrl,
+        token: resolvePluginToken('opencode', '', fallbackToken),
+        kind: 'opencode',
       });
     }
 
@@ -128,14 +131,14 @@ function parsePluginList() {
       });
     }
 
-    if (!list.some((p) => p.id === 'opencode')) {
-      const opencodeUrl = (process.env.OPENCODE_BRIDGE_URL || 'http://127.0.0.1:4340').replace(/\/$/, '');
+    if (!list.some((p) => p.id === 'cursor')) {
+      const cursorUrl = (process.env.CURSOR_BRIDGE_URL || 'http://127.0.0.1:4310').replace(/\/$/, '');
       list.push({
-        id: 'opencode',
-        name: 'OpenCode',
-        url: opencodeUrl,
-        token: resolvePluginToken('opencode', '', fallbackToken),
-        kind: 'opencode',
+        id: 'cursor',
+        name: 'Cursor',
+        url: cursorUrl,
+        token: resolvePluginToken('cursor', '', fallbackToken),
+        kind: 'cursor',
       });
     }
   }
@@ -151,10 +154,10 @@ export function listAgentPlugins({ force = false } = {}) {
 }
 
 export function getDefaultPluginId() {
-  const preferred = String(process.env.DEFAULT_AGENT_PLUGIN || 'agy').trim();
+  const preferred = String(process.env.DEFAULT_AGENT_PLUGIN || 'opencode').trim();
   const plugins = listAgentPlugins();
   if (plugins.some((p) => p.id === preferred)) return preferred;
-  return plugins[0]?.id || 'agy';
+  return plugins[0]?.id || 'opencode';
 }
 
 export function getAgentPlugin(id) {

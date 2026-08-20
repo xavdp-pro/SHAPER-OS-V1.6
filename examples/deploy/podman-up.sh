@@ -92,6 +92,7 @@ podman run -d --name "${SLUG}-bridge-opencode" --network "$NET" --replace \
   -e OPENCODE_WS_BASE=/data/opencode-ws \
   -e OPENCODE_MODEL \
   -e BRIDGE_OPENCODE_STUB \
+  -e OPENCODE_BRIDGE_TOKEN="$BRIDGE_AUTH_TOKEN" \
   -e HOME=/root \
   -e TOKEN_FILE=/root/.config/opencode-bridge/token \
   -v "$UNIV/sav/opencode-ws:/data/opencode-ws:Z" \
@@ -135,6 +136,8 @@ if [[ "$WITH_HELM" == "1" ]]; then
     -e CLI_BRIDGE_NAME=opencode \
     -e CLI_BRIDGE_URL="http://127.0.0.1:$OPENCODE_BRIDGE_PORT" \
     -e CLI_BRIDGE_TOKEN="$BRIDGE_AUTH_TOKEN" \
+    -e OPENCODE_BRIDGE_URL="http://127.0.0.1:$OPENCODE_BRIDGE_PORT" \
+    -e OPENCODE_BRIDGE_TOKEN="$BRIDGE_AUTH_TOKEN" \
     -e DEFAULT_AGENT_PLUGIN=opencode \
     -e AGENT_PLUGINS="opencode|http://127.0.0.1:$OPENCODE_BRIDGE_PORT|$BRIDGE_AUTH_TOKEN" \
     -e DEEPGRAM_API_KEY="$DEEPGRAM_API_KEY" \

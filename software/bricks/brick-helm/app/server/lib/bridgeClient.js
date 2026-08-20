@@ -20,7 +20,7 @@ function nodeUser(node) {
 /** Active agent backend — cursor routes to the conversation's CLI node; claude uses global plugin URL. */
 async function resolveActiveTarget(conversationId) {
   const settings = await getSettings().catch(() => ({}));
-  const pluginId = settings.agentPlugin || process.env.DEFAULT_AGENT_PLUGIN || 'cursor';
+  const pluginId = settings.agentPlugin || process.env.DEFAULT_AGENT_PLUGIN || 'opencode';
   const plugin = getAgentPlugin(pluginId);
   const parsed = parseConversationId(conversationId);
 

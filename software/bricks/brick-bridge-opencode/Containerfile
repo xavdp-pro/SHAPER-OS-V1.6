@@ -11,15 +11,15 @@ RUN chmod 0755 /usr/local/bin/opencode
 WORKDIR /app
 COPY packages/opencode-bridge/ ./
 
-EXPOSE 4340
+EXPOSE 4440
 ENV NODE_ENV=production
 ENV HOME=/root
-ENV OPENCODE_BRIDGE_PORT=4340
+ENV OPENCODE_BRIDGE_PORT=4440
 ENV OPENCODE_BRIDGE_BIND=0.0.0.0
-ENV OPENCODE_SERVE_PORT=4341
+ENV OPENCODE_SERVE_PORT=4441
 ENV OPENCODE_BIN=/usr/local/bin/opencode
 ENV OPENCODE_WS_BASE=/data/opencode-ws
-ENV OPENCODE_MODEL=opencode/nemotron-3-ultra-free
+ENV OPENCODE_MODEL=opencode/deepseek-v4-flash-free
 ENV TOKEN_FILE=/root/.config/opencode-bridge/token
 
 CMD ["node", "server.mjs"]

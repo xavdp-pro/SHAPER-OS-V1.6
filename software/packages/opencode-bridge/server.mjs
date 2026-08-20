@@ -73,10 +73,14 @@ const NONINTERACTIVE_ENV = {
 
 const AGENT_ENV = { ...process.env, ...NONINTERACTIVE_ENV };
 
-fs.mkdirSync(CFG_DIR, { recursive: true });
-fs.mkdirSync(WS_BASE, { recursive: true });
+const IS_STUB = process.env.BRIDGE_OPENCODE_STUB === '1';
 
 function token() {
+  if (process.env.OPENCODE_BRIDGE_TOKEN || process.env.BRIDGE_AUTH_TOKEN) {
+    const t = String(process.env.OPENCODE_BRIDGE_TOKEN || process.env.BRIDGE_AUTH_TOKEN).trim();
+    try { fs.writeFileSync(TOKEN_FILE, t + '\n', { mode: 0o600 }); } catch {}
+    return t;
+  }
   try { return fs.readFileSync(TOKEN_FILE, 'utf8').trim(); }
   catch {
     const t = crypto.randomBytes(24).toString('hex');
@@ -210,6 +214,11 @@ async function waitForServe(timeoutMs = 30000) {
 }
 
 function startServe() {
+  if (IS_STUB) {
+    serveReady = true;
+    console.log('[opencode-bridge] STUB mode enabled — simulated agent active');
+    return;
+  }
   if (serveChild) return;
   serveChild = spawn(
     AGENT_BIN,
@@ -339,6 +348,33 @@ async function ensureSession(name, cwd, model) {
 
 async function runAgent(name, message, opts = {}) {
   const conv = normalizeName(name);
+
+  if (IS_STUB) {
+    const runId = beginRunContract(conv);
+    const sessionID = `ses_stub_${Date.now()}`;
+    sessionToConv.set(sessionID, conv);
+    const st = stateFor(sessionID);
+    st.fullText = '';
+    st.running = true;
+
+    setTimeout(() => {
+      broadcast({ type: 'thinking', conversation: conv, composer_id: sessionID, delta: 'Analyse du contexte et initialisation...' });
+      setTimeout(() => {
+        const reply = message.includes('bonjour') || message.includes('Bonjour') || message.includes('Zephir') || message.includes('Salue')
+          ? 'Bonjour ! Je suis Zephir sur KovZu, votre copilote opérationnel prêt à piloter vos dossiers et exécuter vos tâches en toute souveraineté.'
+          : `Requête prise en compte avec succès : ${message.slice(0, 100)}`;
+        st.fullText = reply;
+        broadcast({ type: 'response', conversation: conv, composer_id: sessionID, delta: reply, text: reply });
+        broadcast({ type: 'response_complete', conversation: conv, composer_id: sessionID, chat_id: sessionID, text: reply, exit: 0 });
+        broadcast({ type: 'run_complete', conversation: conv, composer_id: sessionID });
+        st.running = false;
+        endRunContract(conv, runId);
+      }, 250);
+    }, 100);
+
+    return { chatId: sessionID, runId };
+  }
+
   if (!serveReady) throw new Error('opencode serve not ready');
 
   const reg = loadSessions();

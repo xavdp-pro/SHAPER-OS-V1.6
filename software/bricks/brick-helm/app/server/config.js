@@ -88,7 +88,7 @@ export function preferredNodeForConversation(conversationName) {
  */
 function parseNodes() {
   const raw = process.env.CLI_NODES || '';
-  const fallbackToken = process.env.CLI_BRIDGE_TOKEN || '';
+  const fallbackToken = process.env.CLI_BRIDGE_TOKEN || process.env.OPENCODE_BRIDGE_TOKEN || '';
   const defaultUser = process.env.CLI_BRIDGE_USER || 'zaza';
   if (raw.trim()) {
     return raw.split(',').map((part) => {
@@ -101,9 +101,9 @@ function parseNodes() {
       };
     }).filter((n) => n.name && n.url);
   }
-  const url = process.env.CLI_BRIDGE_URL || 'http://127.0.0.1:4310';
+  const url = process.env.CLI_BRIDGE_URL || process.env.OPENCODE_BRIDGE_URL || 'http://127.0.0.1:4440';
   return [{
-    name: process.env.CLI_BRIDGE_NAME || 'cursor',
+    name: process.env.CLI_BRIDGE_NAME || 'opencode',
     url,
     token: fallbackToken,
     user: defaultUser,

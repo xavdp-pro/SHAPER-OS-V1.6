@@ -57,7 +57,7 @@ const DEFAULT_ENGINE_MODELS = {
 };
 const DEFAULT_MODEL_KEY = (engine) => `default_model_${String(engine || '').toLowerCase().trim()}`;
 
-const DEFAULT_ENABLED_PLUGINS = { cursor: true, agy: true };
+const DEFAULT_ENABLED_PLUGINS = { opencode: true, agy: true, cursor: true };
 
 const defaultDesc = describeCursorModel(DEFAULT_MODEL || DEFAULT_CURSOR_MODEL);
 
@@ -68,7 +68,7 @@ let cache = {
   modelFamily: defaultDesc.family,
   modelEffort: defaultDesc.effort || 'low',
   modelFast: Boolean(defaultDesc.fast),
-  agentPlugin: process.env.DEFAULT_AGENT_PLUGIN || 'agy',
+  agentPlugin: process.env.DEFAULT_AGENT_PLUGIN || 'opencode',
   enabledPlugins: { ...DEFAULT_ENABLED_PLUGINS },
   claudeModel: DEFAULT_CLAUDE_MODEL,
   claudeThinking: DEFAULT_CLAUDE_THINKING,
@@ -118,7 +118,7 @@ export function getTtsProviderSync() {
   return normalizeTtsProvider(cache.ttsProvider);
 }
 
-export function normalizeEnabledPlugins(raw, knownKeys = ['cursor', 'agy']) {
+export function normalizeEnabledPlugins(raw, knownKeys = ['opencode', 'agy', 'cursor']) {
   if (!raw) return { ...DEFAULT_ENABLED_PLUGINS };
   let obj = raw;
   if (typeof raw === 'string') {
@@ -135,7 +135,7 @@ export function normalizeEnabledPlugins(raw, knownKeys = ['cursor', 'agy']) {
     out[k] = obj[k] !== false;
   }
   if (Object.values(out).every((v) => v === false)) {
-    out[knownKeys[0] || 'agy'] = true;
+    out[knownKeys[0] || 'opencode'] = true;
   }
   return out;
 }
@@ -174,7 +174,7 @@ async function loadCache({ force = false } = {}) {
     const modelEffort = rawEffort ? String(rawEffort).trim() : (defaultDesc.effort || 'low');
     const rawModelFast = await getSetting(MODEL_FAST_KEY);
     const modelFast = rawModelFast != null ? normalizeComposerFast(rawModelFast) : composerFast;
-    const agentPlugin = (await getSetting(AGENT_PLUGIN_KEY)) || process.env.DEFAULT_AGENT_PLUGIN || 'agy';
+    const agentPlugin = (await getSetting(AGENT_PLUGIN_KEY)) || process.env.DEFAULT_AGENT_PLUGIN || 'opencode';
     const rawClaudeModel = await getSetting(CLAUDE_MODEL_KEY);
     const claudeModel = rawClaudeModel ? String(rawClaudeModel).trim() : DEFAULT_CLAUDE_MODEL;
     const rawClaudeThinking = await getSetting(CLAUDE_THINKING_KEY);
@@ -206,7 +206,7 @@ async function loadCache({ force = false } = {}) {
         modelFamily: defaultDesc.family,
         modelEffort: defaultDesc.effort || 'low',
         modelFast: Boolean(defaultDesc.fast),
-        agentPlugin: process.env.DEFAULT_AGENT_PLUGIN || 'agy',
+        agentPlugin: process.env.DEFAULT_AGENT_PLUGIN || 'opencode',
         enabledPlugins: { ...DEFAULT_ENABLED_PLUGINS },
         claudeModel: DEFAULT_CLAUDE_MODEL,
         claudeThinking: DEFAULT_CLAUDE_THINKING,
@@ -345,9 +345,9 @@ export async function setEnabledPlugins(partial) {
   const next = normalizeEnabledPlugins({ ...current, ...(partial || {}) }, known);
   await setSetting(ENABLED_PLUGINS_KEY, JSON.stringify(next));
 
-  let agentPlugin = cache.agentPlugin || 'agy';
+  let agentPlugin = cache.agentPlugin || 'opencode';
   if (next[agentPlugin] === false) {
-    const fallback = known.find((id) => next[id]) || 'agy';
+    const fallback = known.find((id) => next[id]) || 'opencode';
     await setSetting(AGENT_PLUGIN_KEY, fallback);
     agentPlugin = fallback;
   }
@@ -432,7 +432,7 @@ export async function getSettings() {
   const enabledPlugins = normalizeEnabledPlugins(c.enabledPlugins || DEFAULT_ENABLED_PLUGINS);
   let agentPlugin = c.agentPlugin;
   if (enabledPlugins[agentPlugin] === false) {
-    agentPlugin = Object.keys(enabledPlugins).find((id) => enabledPlugins[id]) || 'agy';
+    agentPlugin = Object.keys(enabledPlugins).find((id) => enabledPlugins[id]) || 'opencode';
   }
   return {
     agentName: c.agentName,
