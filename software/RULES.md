@@ -160,6 +160,25 @@ SHAPER OS uses **two complementary layers** — never one replacing the other:
 
 ---
 
+### Rule 0K: Inter-Container Token Synchronization, Anti-Silence Guarantee & Reborn Presentation Invariant
+
+* **Deterministic Inter-Container Token Sync**:
+  * **Priority to `.env`**: Whenever `podman-up.sh` runs, `OPENCODE_BRIDGE_TOKEN` or `CLI_BRIDGE_TOKEN` from `.env` MUST strictly overwrite any stale token on disk (`/root/.config/opencode-bridge/token`).
+  * **Shared Auth Contract**: Helm, Bridge, Queue, and Maestro MUST strictly share the identical authentication token to eliminate `HTTP 502 Unauthorized` errors on control actions (`/reset`, `/clear`, `/stop`, `/inject`).
+* **Anti-Silence & Guaranteed Final Response**:
+  * **Zero Orphaned Runs**: In any bridge adapter (`opencode-bridge`, etc.), the `session.idle` event MUST NEVER emit an empty text payload.
+  * **Error Surfacing**: If a tool or model aborts (`MessageAbortedError`, bash timeout, etc.), the error MUST be surfaced explicitly as the assistant's final text (`⚠️ Erreur outil...`).
+  * **Fallback Conclusion**: If a session concludes without a text part, a default completion summary is automatically emitted so the UI bubble and Deepgram voice engine are never starved or hung.
+* **Reborn (Session Prime) Invariant**:
+  * **Clean Rebirth**: Triggering Reborn (via UI button or voice keyword « reborn ») MUST wipe previous conversation turns on the bridge, flush the local timeline, and immediately re-inject the official Presentation Briefing (*"Bonjour [Nom] ! Je suis Zephir..."*).
+  * **UI Timeline Retention**: The UI MUST preserve the freshly returned Prime run without blanking out.
+* **Mandatory Closed-Loop Test Validation**:
+  * Any agent modifying the bridge, Helm, or voice pipeline MUST execute and confirm 100% success on:
+    1. `software/scripts/test-voice-player.mjs` (Acoustic dB verification + 401 strict rejection test).
+    2. `software/scripts/test-e2e-business-flow.mjs` (Full 6-step autonomous business flow).
+
+---
+
 ### Rule 1: Canonical Naming Conventions & Mandatory `univ-` Git Prefix
 
 * **Mandatory `univ-` Git Repository Prefix (Everywhere)**: All Git repositories across the entire ecosystem MUST STRICTLY begin with the prefix `univ-`. No exceptions are permitted.

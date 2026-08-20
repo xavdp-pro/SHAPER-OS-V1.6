@@ -101,20 +101,31 @@ bash <univ_slug>-dev/deploy/podman-up.sh
 # health must exit 0
 
 cd software && npm run test:live   # tier-a — MUST be green
-# tier-b: npm run test:live:helm
+# tier-b verification:
+node scripts/test-voice-player.mjs        # Strict closed-loop audio & 401 check (MUST be 100% green)
+node scripts/test-e2e-business-flow.mjs   # Full 6-step autonomous business flow (MUST be 100% green)
 ```
 
-Silence on unspecified ports = you may choose **if** brick INTENTs hold. You may **not** skip `test` or `test:live`.
+Silence on unspecified ports = you may choose **if** brick INTENTs hold. You may **not** skip `test`, `test:live`, or closed-loop scripts.
+
+---
+
+## Non-Regression Invariants for Future Agents
+
+1. **Deterministic Bridge Token Sync**: `podman-up.sh` always forces `OPENCODE_BRIDGE_TOKEN` from `.env` into `$UNIV/sav/opencode-bridge/token` so Helm and Bridge never mismatch tokens (`HTTP 502/401 Unauthorized`).
+2. **Guaranteed Final Response (Anti-Silence)**: OpenCode `translate.mjs` must never emit empty text on `session.idle`. Aborted tools or model errors must be surfaced explicitly as the assistant's text response.
+3. **Reborn (Session Prime)**: `/api/session/clear` resets the bridge session and immediately restores the Presentation Briefing ("Bonjour [Nom] ! Je suis Zephir...").
 
 ---
 
 ## Forbidden
 
-- Skip `npm test` or `npm run test:live`
+- Skip `npm test`, `npm run test:live`, or `test-e2e-business-flow.mjs`
 - Commit `.env`, vault files, tunnel tokens, `*.enc`
 - Default API keys in shell scripts
 - Merge client UI into Helm
 - Production mailboxes in DEV/TEST
+- Leave `session.idle` with empty response text (starving UI and TTS)
 
 ---
 
