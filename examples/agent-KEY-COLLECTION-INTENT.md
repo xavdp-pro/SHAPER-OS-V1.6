@@ -32,19 +32,32 @@ You are my **Shaper OS install agent**. You know Linux. I may not know this proj
 3. Copy `software/resources/vault-resources.dev.example.json` → `software/resources/vault-resources.local.json` — align `masterKey` and `token` with `.env`.
 4. Do **not** ask me for Deepgram, Groq, or Cloudflare until tier-a tests are green and I ask for voice / public URL.
 
-## Phase 3 — Browser-assisted signups (tier-b only, on my request)
+## Phase 3 — Strict `.env` Verification & Multi-Podman Propagation
 
-When I ask for **voice** or **public `/console`**, use your **integrated browser** if available. For each key, **one site at a time**:
+Before launching the containers (`podman-up.sh`):
+
+1. **Verify completeness**: Check `.env` at repo root (`.env`) or `software/.env`.
+2. **Proactive Reclamation (Mandatory Halt)**: If any required key for the target tier (`DEEPGRAM_API_KEY`, `GROQ_API_KEY`, `VAULT_MASTER_KEY`, `JWT_SECRET`, Cloudflare token) is missing or empty, **HALT IMMEDIATELY**. Do not launch containers blindly. Proactively prompt me with the vendor link from the table below and wait for me to paste the key.
+3. **Propagate**: Copy/sync the validated `.env` to `software/.env` and universe deployment configs (`deploy/*.env`) so all Podman containers receive valid credentials.
 
 | I need | Open this URL | Paste into |
 | :--- | :--- | :--- |
-| Speech (STT/TTS) | https://console.deepgram.com/ → API Keys | `DEEPGRAM_API_KEY` in `software/.env` |
-| Fast voice ack | https://console.groq.com/keys | `GROQ_API_KEY` in `software/.env` |
+| Speech (STT/TTS) | https://console.deepgram.com/ → API Keys | `DEEPGRAM_API_KEY` in `.env` |
+| Fast voice ack | https://console.groq.com/keys | `GROQ_API_KEY` in `.env` |
 | Public HTTPS tunnel | https://one.dash.cloudflare.com/ → Networks → Tunnels | `<univ>-dev/sav/tunnel/token` |
 
 Guide me click-by-click. Wait for me to complete login / 2FA. I paste secrets **only** into local files — never into chat or git.
 
 Optional later: [Cartesia](https://play.cartesia.ai/), [ElevenLabs](https://elevenlabs.io/app/settings/api-keys), [OpenRouter](https://openrouter.ai/keys) — only if brick INTENT requires them.
+
+---
+
+## ⚖️ Standard vs Freestyle Rule
+
+- **Standard Recipe (100% Predictable)**: I provide the complete `.env` with valid keys. You validate, propagate, and execute. Outcome: 100% green and autonomous.
+- **Freestyle Mode (My Responsibility)**: If I ask you to proceed with missing or partial keys (e.g. while waiting for an account), warn me of inactive/degraded features. Managing freestyle mode is my responsibility with you.
+
+---
 
 ## Phase 4 — Install pipeline (do not reorder)
 

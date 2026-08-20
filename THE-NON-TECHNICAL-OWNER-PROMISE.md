@@ -74,3 +74,20 @@ Real Chromium browser tests verifying what the human operator actually sees and 
 2. **Never Deliver Broken Code:** Always test artifacts and deliverables locally before returning completion to the user.
 3. **Clear Human Communication:** State what was done in plain business language, provide direct actionable links, and explain next steps simply.
 4. **Zero Silent Hangs:** If an upstream model or tool throws an error, catch it, translate it into friendly French/English, and display it with clear remedy suggestions.
+
+---
+
+## 4. The Human Vibe-Coder Contract & "Standard vs Freestyle" Guarantee
+
+### The Vibe-Coding Principle
+The human vibe-coder pairs with the AI agent to shape their business tools. The human provides the vision and API credentials in the root `.env` (`REMOTE3/.env` or `software/.env`). The AI agent validates the environment, proactively requests missing keys, and propagates them across all Podman containers.
+
+### ⚖️ The Guarantee Matrix
+
+| Mode | Conditions | Outcome & Support |
+| :--- | :--- | :--- |
+| 🛡️ **Standard Recipe ("La Sauce Robuste")** | The human follows the checklist and provides all valid keys (`DEEPGRAM_API_KEY`, `GROQ_API_KEY`, etc.) in `.env`. The AI agent inspects and validates before launching. | **100% Guaranteed Predictability.** All 3 tiers of the pyramid pass, zero 401 errors, full autonomous voice and tool generation. |
+| 🎨 **Freestyle Mode ("Liberté Totale")** | The human user decides to omit keys, run partial stacks, change architecture rules, or test while waiting for accounts. | **User's Full Responsibility.** Degraded or inactive features (e.g. browser Web Speech fallback instead of Deepgram HD) are managed directly between the human and their AI agent. |
+
+> [!NOTE]
+> Freedom of customization is absolute. But if you deviate from the standard verified checklist, you are in freestyle mode. For 100% guaranteed, rock-solid, zero-friction delivery, provide the complete `.env` and let the agent validate and propagate.

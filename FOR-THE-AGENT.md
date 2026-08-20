@@ -46,6 +46,25 @@ Write `software/.env`. Never commit secrets. Never paste keys from old repos int
 
 ---
 
+## Strict `.env` Verification & Key Propagation (Vibe-Coding Contract)
+
+Before launching any container, stack (`podman-up.sh`), or test suite:
+
+1. **Inspect `.env` Completeness**:
+   - Check if `.env` exists at repo root (`.env`), `software/.env`, or the universe folder.
+   - Verify that all required keys for the target tier are present, non-empty, and NOT dummy placeholders.
+2. **Proactive Key Reclamation (Mandatory Halt)**:
+   - If any required key (`DEEPGRAM_API_KEY`, `GROQ_API_KEY`, `VAULT_MASTER_KEY`, `JWT_SECRET`, Cloudflare tunnel token) is missing or invalid: **HALT IMMEDIATELY**.
+   - Do NOT proceed blindly to build or launch.
+   - Explicitly ask the human vibe-coder for the missing key(s), provide the direct vendor console URL (see [`KEYS-AND-ACCOUNTS.md`](./KEYS-AND-ACCOUNTS.md)), and wait for the human to provide them.
+3. **Multi-Podman Key Propagation**:
+   - You are responsible for copying/syncing validated keys from the root `.env` into `software/.env` and all universe `deploy/*.env` files so every container boots with valid credentials.
+4. **Standard vs Freestyle Guarantee**:
+   - **Standard Recipe (100% Predictable)**: When all keys are complete and valid, the entire pipeline is guaranteed to be 100% deterministic and green from end to end.
+   - **Freestyle Mode (User Responsibility)**: If the human chooses to run with partial/missing keys, warn them clearly of inactive features. Managing degraded modes in freestyle is the human-agent pair's responsibility.
+
+---
+
 ## External keys (tier-b) — browser-assisted
 
 Read [`KEYS-AND-ACCOUNTS.md`](./KEYS-AND-ACCOUNTS.md). If the human asks for voice or a public URL:
@@ -55,10 +74,10 @@ Read [`KEYS-AND-ACCOUNTS.md`](./KEYS-AND-ACCOUNTS.md). If the human asks for voi
    - Deepgram → https://console.deepgram.com/ → API Keys
    - Groq → https://console.groq.com/keys
    - Cloudflare tunnel → https://one.dash.cloudflare.com/ → Networks → Tunnels
-3. Human pastes into `software/.env` or `sav/tunnel/token` — **never** into chat or git.
+3. Human pastes into `.env` or `software/.env` or `sav/tunnel/token` — **never** into chat or git.
 4. Deploy tier-b (`manifest.tier-b.json`, `WITH_HELM=1`) and run `npm run test:live:helm`.
 
-Do **not** ask for Deepgram/Groq/Cloudflare during tier-a install.
+Do **not** launch tier-b with empty or invalid keys without explicitly prompting the human first.
 
 ## Pipeline (DEV) — do not reorder
 

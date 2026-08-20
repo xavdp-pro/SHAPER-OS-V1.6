@@ -143,6 +143,23 @@ SHAPER OS uses **two complementary layers** — never one replacing the other:
 
 ---
 
+### Rule 0J: The Human Vibe-Coder & AI Agent Contract — Strict `.env` Verification, Key Propagation, and the Standard vs Freestyle Guarantee
+
+* **Human Vibe-Coder & AI Agent Partnership**:
+  * The human vibe-coder is the visionary project owner and sovereign director.
+  * The AI agent is the meticulous technical co-pilot and strict executor.
+* **Strict `.env` Pre-Flight Verification & Mandatory Halt**:
+  * **Pre-Flight Inspection**: Before building images, launching containers (`podman-up.sh`), or running tests, the AI agent **MUST ALWAYS inspect the `.env`** (at repository root, `software/.env`, or universe directory).
+  * **Zero Blind Execution**: The AI agent MUST NEVER start deployment blindly hoping secrets exist or using dummy placeholders that return 401s.
+  * **Proactive Key Reclamation**: If any required secret (`VAULT_MASTER_KEY`, `JWT_SECRET`, `DEEPGRAM_API_KEY`, `GROQ_API_KEY`, Cloudflare tunnel token) is missing or empty, the AI agent **MUST HALT IMMEDIATELY**, explain which key is missing, provide the exact vendor signup/console URL, and wait for the human to paste it.
+* **Multi-Podman Key Propagation**:
+  * The AI agent is strictly responsible for copying and propagating the validated `.env` across all universe and Podman runtime directories (`software/.env`, `deploy/env`, `deploy/univ9.env`).
+* **The "Standard vs Freestyle" Guarantee & Responsibility Matrix**:
+  * **Standard Recipe ("La Sauce Robuste")**: When the human respects the checklist and provides a complete, valid `.env`, the entire Shaper OS deployment pipeline is guaranteed to be **100% deterministic, predictable, autonomous, and green from end to end**.
+  * **Freestyle Mode ("Liberté Totale")**: The human user is 100% free to go freestyle, test with partial keys, run experimental stacks, or customize rules. However, managing degraded/inactive services in freestyle mode is the **user's full responsibility with their AI agent**. The core baseline cannot be considered failing if the standard formula was bypassed.
+
+---
+
 ### Rule 1: Canonical Naming Conventions & Mandatory `univ-` Git Prefix
 
 * **Mandatory `univ-` Git Repository Prefix (Everywhere)**: All Git repositories across the entire ecosystem MUST STRICTLY begin with the prefix `univ-`. No exceptions are permitted.

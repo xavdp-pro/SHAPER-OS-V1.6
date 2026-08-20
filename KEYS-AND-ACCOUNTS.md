@@ -34,7 +34,31 @@ Start with **tier-a**. Add tier-b only after `npm run test:live` is green.
 | `OPENROUTER_API_KEY` | optional | **You** | [OpenRouter keys](https://openrouter.ai/keys) | `software/.env` |
 | Cloudflare **R2** (backups) | optional | **You** | [Cloudflare R2](https://dash.cloudflare.com/) → R2 → Manage API tokens | `software/.env` (`R2_*`) |
 
-Template file: [`.env.example`](./.env.example) → copy to `software/.env`.
+Template file: [`.env.example`](./.env.example) → copy to `.env` or `software/.env`.
+
+---
+
+## The Vibe-Coder & AI Agent Contract (Strict Validation Protocol)
+
+1. **Human's Responsibility**:
+   - The human vibe-coder provides the root `.env` (at repository root `REMOTE3/.env` or `software/.env`).
+   - The human provides the API keys for the desired services (Deepgram, Groq, Cloudflare).
+2. **AI Agent's Strict Obligation (Mandatory Check & Halt)**:
+   - **Inspect First**: Before running `podman-up.sh` or deploying any stack, the AI agent **MUST inspect the `.env`** to ensure that every required key for the requested tier is present, non-empty, and valid.
+   - **Proactive Reclamation**: If a key is missing or is a placeholder, the AI agent **MUST HALT** and explicitly ask the human vibe-coder for the key, providing the direct signup/console link. The agent **MUST NOT** launch containers blindly hoping keys exist.
+   - **Multi-Podman Key Propagation**: The AI agent is responsible for copying/syncing the validated keys into all required `.env` locations across universes and Podman containers (`software/.env`, `deploy/env`, `deploy/univ9.env`).
+
+---
+
+## ⚖️ Standard vs Freestyle Disclaimer (Responsibility Matrix)
+
+| Mode | Conditions | Outcome | Guarantee |
+| :--- | :--- | :--- | :--- |
+| 🛡️ **Standard Recipe ("La Sauce Robuste")** | Human provides the complete `.env` with valid keys as specified in the checklist. AI agent validates and propagates before boot. | 100% Deterministic, Autonomous & Green from start to finish. Zero 401 errors. | **Guaranteed by Shaper OS doctrine.** |
+| 🎨 **Freestyle Mode ("Liberté Totale")** | Human chooses to launch with partial keys, missing credentials, custom stacks, or modified rules while waiting for an account or key. | Degraded / inactive services (e.g. browser voice fallback instead of Deepgram HD, mock bridges, etc.). | **User's full responsibility.** If something does not work in freestyle, the human & agent manage it together. |
+
+> [!IMPORTANT]
+> **Freedom with Transparency**: You are 100% free to customize, hack, omit keys, or change the architecture with your AI agent. However, if you deviate from the standard verified checklist, you cannot claim the baseline system is broken. Respect the recipe for a 100% guaranteed predictable outcome.
 
 ---
 
@@ -43,10 +67,12 @@ Template file: [`.env.example`](./.env.example) → copy to `software/.env`.
 If your IDE agent has a **built-in browser** (e.g. Cursor Browser), use it. The agent should:
 
 1. Read [`LAW.md`](./LAW.md), [`START-HERE.md`](./START-HERE.md), [`FOR-THE-AGENT.md`](./FOR-THE-AGENT.md), this file.
-2. **Generate** vault keys locally — do not ask the human to sign up anywhere for tier-a.
-3. For tier-b, **open one vendor URL at a time**, wait for the human to sign in / create the key, then paste into `software/.env` only.
-4. **Never** paste keys into chat logs, commits, or example files.
-5. Run the install pipeline; **stop on red tests**.
+2. **Verify root `.env`**: Check completeness of keys for target tier. Halt and ask the human if keys are missing.
+3. **Generate** vault keys locally — do not ask the human to sign up anywhere for tier-a.
+4. For tier-b, **open one vendor URL at a time**, wait for the human to sign in / create the key, then paste into `.env` / `software/.env`.
+5. **Propagate** the validated `.env` to all universe/podman deployment directories.
+6. **Never** paste keys into chat logs, commits, or example files.
+7. Run the install pipeline; **stop on red tests**.
 
 Copy-paste intent for your agent: [`examples/agent-KEY-COLLECTION-INTENT.md`](./examples/agent-KEY-COLLECTION-INTENT.md)
 
@@ -56,16 +82,16 @@ Copy-paste intent for your agent: [`examples/agent-KEY-COLLECTION-INTENT.md`](./
 
 - [ ] Clone repo, open in IDE with AI agent
 - [ ] Paste intent from `examples/agent-KEY-COLLECTION-INTENT.md`
-- [ ] Agent generates `VAULT_MASTER_KEY` + `VAULT_TOKEN`
+- [ ] Agent inspects `.env` and generates `VAULT_MASTER_KEY` + `VAULT_TOKEN`
 - [ ] Agent runs `npm test` → build → universe → `test:live`
 - [ ] No Deepgram / Groq / Cloudflare needed yet
 
 ## Human checklist (tier-b, after tier-a green)
 
-- [ ] [Deepgram](https://console.deepgram.com/) — API key → `DEEPGRAM_API_KEY`
-- [ ] [Groq](https://console.groq.com/keys) — API key → `GROQ_API_KEY`
+- [ ] [Deepgram](https://console.deepgram.com/) — API key → `DEEPGRAM_API_KEY` in `.env`
+- [ ] [Groq](https://console.groq.com/keys) — API key → `GROQ_API_KEY` in `.env`
 - [ ] [Cloudflare Zero Trust](https://one.dash.cloudflare.com/) — tunnel token → `sav/tunnel/token`
-- [ ] Agent sets `WITH_HELM=1`, deploys tier-b manifest, runs `npm run test:live:helm`
+- [ ] Agent validates `.env`, propagates keys, sets `WITH_HELM=1`, deploys tier-b manifest, runs `npm run test:live:helm`
 
 ---
 
