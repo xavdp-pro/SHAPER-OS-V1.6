@@ -88,7 +88,7 @@ function buildServicesDirectoryBlock(lang) {
       '| **Vault** | `http://127.0.0.1:8610` | `Bearer <VAULT_TOKEN from software/.env>` | AES-256-GCM encrypted secrets (`/api/secret/*`, `/api/secrets`) |',
       '| **Logger** | `http://127.0.0.1:8620` | None | JSONL audit ingestion (`POST /api/ingest`), SSE live stream |',
       '| **Queue** | `http://127.0.0.1:8640` | None | Async job queue (`POST /api/jobs`, `GET /api/jobs/:id`) |',
-      '| **Maestro** | `http://127.0.0.1:8530` | None | Cluster scheduler & health (`GET /api/health`, `/api/status`) |',
+      '| **Maestro** | `http://127.0.0.1:8630` | None | Cluster scheduler & health (`GET /api/health`, `/api/status`) |',
       '| **GED** | `http://127.0.0.1:8660` | None | Sovereign document hub (`/data/ged/`, `.meta.json`) |',
       '| **Qdrant** | `http://127.0.0.1:6333` | None | Semantic vector store (`/collections`, `/points/search`) |',
       '| **Helm** | `http://127.0.0.1:8650` | Session | Universal KovZu operator cockpit |',
@@ -101,7 +101,7 @@ function buildServicesDirectoryBlock(lang) {
     '| **Vault** | `http://127.0.0.1:8610` | `Bearer <VAULT_TOKEN from software/.env>` | Coffre-fort chiffré AES-256-GCM (`/api/secret/*`, `/api/secrets`) |',
     '| **Logger** | `http://127.0.0.1:8620` | Aucun | Ingestion logs JSONL (`POST /api/ingest`), flux SSE temps réel |',
     '| **Queue** | `http://127.0.0.1:8640` | Aucun | File de jobs asynchrones (`POST /api/jobs`, `GET /api/jobs/:id`) |',
-    '| **Maestro** | `http://127.0.0.1:8530` | Aucun | Orchestrateur & santé cluster (`GET /api/health`, `/api/status`) |',
+    '| **Maestro** | `http://127.0.0.1:8630` | Aucun | Orchestrateur & santé cluster (`GET /api/health`, `/api/status`) |',
     '| **GED** | `http://127.0.0.1:8660` | Aucun | Hub documentaire souverain (`/data/ged/`, `.meta.json`) |',
     '| **Qdrant** | `http://127.0.0.1:6333` | Aucun | Base vectorielle sémantique (`/collections`, `/points/search`) |',
     '| **Helm** | `http://127.0.0.1:8650` | Session | Cockpit de pilotage universel KovZu |',
@@ -182,6 +182,24 @@ export function digestContext({
   const content = `${sections.join('\n')}\n`;
   const outPath = contextFilePath(cwd);
   fs.writeFileSync(outPath, content, 'utf8');
+
+  // Also write to global shared roots so any CLI agent instance always finds it
+  const globalTargets = [
+    '/data/opencode-ws/_kovzu/CONTEXT.md',
+    '/data/_kovzu/CONTEXT.md',
+  ];
+  for (const tgt of globalTargets) {
+    try {
+      const tgtDir = path.dirname(tgt);
+      if (fs.existsSync(path.dirname(tgtDir))) {
+        fs.mkdirSync(tgtDir, { recursive: true });
+        fs.writeFileSync(tgt, content, 'utf8');
+      }
+    } catch {
+      /* non-blocking */
+    }
+  }
+
   const hash = crypto.createHash('sha256').update(content).digest('hex').slice(0, 16);
   return { ok: true, path: outPath, hash };
 }

@@ -111,8 +111,12 @@ export async function ensureUsersSchema() {
     /* already exists */
   }
 
-  await ensureDemoAdminUser();
-  await ensureDemoGuestUsers();
+  // Clean up legacy test/demo guest users from earlier development
+  try {
+    await query(`DELETE FROM users WHERE email IN ('thesuperuser@helm.local', 'ivonne.rauhut@parloa.com') OR demo_slug = 'ivonne'`);
+  } catch {
+    /* ignore */
+  }
 
   const { ensureAllUsersHaveConversations } = await import('./userSession.js');
   await ensureAllUsersHaveConversations();
@@ -128,109 +132,4 @@ async function ensureUsersColumn(column, definition) {
   );
   if (Number(rows[0]?.n || 0) > 0) return;
   await query(`ALTER TABLE users ADD COLUMN ${column} ${definition}`);
-}
-
-/** Upsert demo operator TheSuperUser — demo mode only. */
-async function ensureDemoAdminUser() {
-  if (!config.isDemo) return;
-  const email = String(DEMO_ADMIN.email).trim().toLowerCase();
-  const name = String(DEMO_ADMIN.name).trim();
-  const role = ['admin', 'operator', 'viewer'].includes(DEMO_ADMIN.role)
-    ? DEMO_ADMIN.role
-    : 'operator';
-  const notes = String(DEMO_ADMIN.notes || '').trim() || null;
-  const conversation = String(DEMO_ADMIN.conversation || 'Demo').trim() || 'Demo';
-  const passwordHash = await hashPassword(DEMO_ADMIN.password);
-  const defaultBriefing = String(DEMO_ADMIN.briefing || '').trim() || null;
-
-  const existing = await query(
-    'SELECT id, briefing FROM users WHERE email = ? LIMIT 1',
-    [email],
-  );
-  if (existing[0]?.id) {
-    await query(
-      `UPDATE users
-       SET name = ?, role = ?, status = 'active', password_hash = ?, notes = ?,
-           demo_conversation = ?
-       WHERE id = ?`,
-      [name, role, passwordHash, notes, conversation, existing[0].id],
-    );
-    if (!String(existing[0].briefing || '').trim() && defaultBriefing) {
-      await query('UPDATE users SET briefing = ? WHERE id = ?', [
-        defaultBriefing,
-        existing[0].id,
-      ]);
-    } else if (
-      defaultBriefing
-      && (
-        String(existing[0].briefing || '').includes('Helm est la console')
-        || String(existing[0].briefing || '').includes('réponds en français')
-        || String(existing[0].briefing || '').includes('Je suis TheSuperUser')
-      )
-    ) {
-      await query('UPDATE users SET briefing = ? WHERE id = ?', [
-        defaultBriefing,
-        existing[0].id,
-      ]);
-    }
-    return;
-  }
-
-  await query(
-    `INSERT INTO users (email, name, role, status, notes, password_hash, briefing, demo_conversation)
-     VALUES (?, ?, ?, 'active', ?, ?, ?, ?)`,
-    [email, name, role, notes, passwordHash, defaultBriefing, conversation],
-  );
-}
-
-/** Upsert personalized demo guests — demo mode only. */
-async function ensureDemoGuestUsers() {
-  if (!config.isDemo) return;
-  for (const guest of DEMO_GUESTS) {
-    const email = String(guest.email).trim().toLowerCase();
-    const firstName = String(guest.firstName || '').trim();
-    const lastName = String(guest.lastName || '').trim();
-    const name = String(guest.name || `${firstName} ${lastName}`).trim();
-    const slug = String(guest.demoSlug || '').trim().toLowerCase();
-    const plain = String(guest.password || '').trim();
-    const conversation = String(guest.conversation || firstName || slug).trim();
-    const briefing = String(guest.briefing || '').trim() || null;
-    const notes = String(guest.notes || '').trim() || null;
-    const role = guest.role === 'admin' ? 'operator' : (guest.role || 'operator');
-    if (!email || !slug || !plain) continue;
-
-    const passwordHash = await hashGuestPassword(plain);
-    const existing = await query(
-      'SELECT id FROM users WHERE email = ? OR demo_slug = ? LIMIT 1',
-      [email, slug],
-    );
-
-    if (existing[0]?.id) {
-      await query(
-        `UPDATE users SET
-           email = ?, name = ?, first_name = ?, last_name = ?,
-           role = ?, status = 'active', notes = ?, briefing = ?,
-           password_hash = ?, demo_slug = ?, demo_password = ?, demo_conversation = ?
-         WHERE id = ?`,
-        [
-          email, name, firstName || null, lastName || null,
-          role, notes, briefing,
-          passwordHash, slug, plain, conversation || null,
-          existing[0].id,
-        ],
-      );
-      continue;
-    }
-
-    await query(
-      `INSERT INTO users (
-         email, name, first_name, last_name, role, status, notes, briefing,
-         password_hash, demo_slug, demo_password, demo_conversation
-       ) VALUES (?, ?, ?, ?, ?, 'active', ?, ?, ?, ?, ?, ?)`,
-      [
-        email, name, firstName || null, lastName || null, role, notes, briefing,
-        passwordHash, slug, plain, conversation || null,
-      ],
-    );
-  }
 }
