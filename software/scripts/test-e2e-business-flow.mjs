@@ -40,15 +40,18 @@ async function run() {
     // Step 1: Login Flow
     // -------------------------------------------------------------
     console.log('▶ [Step 1] Testing Authentication & Session Persistence...');
-    await page.goto(`${BASE_URL}/login`, { waitUntil: 'networkidle', timeout: 30000 });
+    await page.goto(`${BASE_URL}/?lang=fr`, { waitUntil: 'networkidle', timeout: 30000 });
     
-    const passInput = page.locator('input[type="password"]').first();
-    if (await passInput.isVisible()) {
-      const emailInput = page.locator('input[type="text"], input[type="email"]').first();
-      await emailInput.fill(EMAIL);
-      await passInput.fill(PASSWORD);
-      await page.locator('button[type="submit"]').first().click();
-      await page.waitForFunction(() => window.location.pathname.includes('/console'), { timeout: 15000 });
+    const emailField = page.getByPlaceholder(/you@domain|vous@domaine|tu@dominio/i)
+      .or(page.locator('input[type="text"], input[type="email"]').first());
+    const passwordField = page.getByPlaceholder('••••••••')
+      .or(page.locator('input[type="password"]').first());
+    
+    if (await passwordField.isVisible()) {
+      await emailField.fill(EMAIL);
+      await passwordField.fill(PASSWORD);
+      await page.getByRole('button', { name: /S'authentifier|Sign in|Se connecter/i }).click();
+      await page.waitForURL(/\/(console|admin)/, { timeout: 25000 });
     }
 
     await page.waitForTimeout(3000);
@@ -59,9 +62,8 @@ async function run() {
     // Step 2: Presentation & Briefing Verification
     // -------------------------------------------------------------
     console.log('\n▶ [Step 2] Testing Presentation Briefing & Active Engine Header...');
-    const bodyContent = await page.content();
-    if (!bodyContent.includes('OpenCode')) throw new Error('Moteur OpenCode introuvable dans la console');
-    if (!bodyContent.includes('Bonjour Xavier, je suis Zephir')) throw new Error('Briefing de présentation introuvable');
+    await page.waitForSelector('text=OpenCode', { timeout: 15000 });
+    await page.waitForSelector('text=Bonjour Xavier, je suis Zephir', { timeout: 15000 });
 
     await page.screenshot({ path: path.join(SCREENSHOT_DIR, '02-presentation-briefing.png') });
     console.log('  ✓ Planche de présentation affichée : "Bonjour Xavier, je suis Zephir..."');
