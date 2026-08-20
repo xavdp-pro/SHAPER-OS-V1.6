@@ -22,8 +22,22 @@ if [[ ! -d "$SHAPER/packages" ]]; then
   fi
 fi
 
-ENV_FILE="${ENV_FILE:-$SHAPER/.env}"
-if [[ -f "$ENV_FILE" ]]; then
+ENV_FILE="${ENV_FILE:-}"
+if [[ -z "$ENV_FILE" ]]; then
+  if [[ -f "$SHAPER/.env" ]]; then
+    ENV_FILE="$SHAPER/.env"
+  elif [[ -f "$REPO_ROOT/.env" ]]; then
+    ENV_FILE="$REPO_ROOT/.env"
+  elif [[ -f "$UNIV/.env" ]]; then
+    ENV_FILE="$UNIV/.env"
+  elif [[ -f "$UNIV/deploy/env" ]]; then
+    ENV_FILE="$UNIV/deploy/env"
+  elif [[ -f "$UNIV/deploy/univ9.env" ]]; then
+    ENV_FILE="$UNIV/deploy/univ9.env"
+  fi
+fi
+
+if [[ -n "$ENV_FILE" && -f "$ENV_FILE" ]]; then
   set -a
   # shellcheck disable=SC1090
   source "$ENV_FILE"
