@@ -350,3 +350,16 @@ Every production architecture enforces four decoupled backup layers:
   * **Clock-Synchronized Word Weighting**: For streaming providers without native word timestamps (e.g. Deepgram Aura), timings are computed via `estimateKaraokeWords` based on word length and punctuation weight, dynamically rescaled against actual PCM playback duration.
   * **Fluid Visual Reading**: In `MarkdownContent.jsx` and `InlineKaraokeText.jsx`, only the exact word currently being spoken (`activeIndex`) is illuminated in real-time, providing a smooth, realistic, and responsive reading experience.
 
+---
+
+### Rule 18: Primary Admin Account Onboarding Protocol (Zero Unsolicited Dummy Users)
+* **Explicit Human Prompting Upon Setup Completion**: Whenever an AI agent or deployer completes the bootstrap and health checks of a new SHAPER OS / Helm universe:
+  1. The agent MUST explicitly ask the human operator for their desired primary Admin credentials:
+     * Preferred **Email address** (e.g. `xavier@xavdp.pro` or custom).
+     * **First Name / Display Name** (e.g. `Xavier`).
+     * Secure **Password**.
+  2. The agent MUST NOT leave unverified, dummy, or hardcoded mock users in the system database.
+  3. The agent provisions the account in MariaDB (`users` table) with `role: 'admin'`, seeds their dedicated workspace directory (`/data/opencode-ws/<User>`), generates the sovereign `CONTEXT.md`, and confirms the login URL to the human.
+* **Zero Legacy Demo Clutter**: Demo guest accounts from older sandboxes (such as `ivonne`) are strictly prohibited in the default base source code, registries, and production instances.
+
+

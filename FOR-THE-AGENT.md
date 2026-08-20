@@ -115,6 +115,7 @@ Silence on unspecified ports = you may choose **if** brick INTENTs hold. You may
 1. **Deterministic Bridge Token Sync**: `podman-up.sh` always forces `OPENCODE_BRIDGE_TOKEN` from `.env` into `$UNIV/sav/opencode-bridge/token` so Helm and Bridge never mismatch tokens (`HTTP 502/401 Unauthorized`).
 2. **Guaranteed Final Response (Anti-Silence)**: OpenCode `translate.mjs` must never emit empty text on `session.idle`. Aborted tools or model errors must be surfaced explicitly as the assistant's text response.
 3. **Reborn (Session Prime)**: `/api/session/clear` resets the bridge session and immediately restores the Presentation Briefing ("Bonjour [Nom] ! Je suis Zephir...").
+4. **Primary Admin Account Onboarding**: Once the stack is deployed and health is green, prompt the human operator for their desired primary Admin credentials (Email, Display Name, Password) to seed MariaDB and their personal workspace (`/data/opencode-ws/<User>`). Never keep legacy demo accounts (e.g. `ivonne`) in the base source or active database.
 
 ---
 
@@ -126,9 +127,11 @@ Silence on unspecified ports = you may choose **if** brick INTENTs hold. You may
 - Merge client UI into Helm
 - Production mailboxes in DEV/TEST
 - Leave `session.idle` with empty response text (starving UI and TTS)
+- Leave unverified or dummy user accounts without prompting the human for their desired credentials
 
 ---
 
 ## Done
 
 [`PROOF.md`](./PROOF.md) + live tests green. On failure: stop and show the error.
+
