@@ -15,6 +15,9 @@ import { VaultStore } from '../packages/vault/index.js';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '..');
 
+const RESOURCES_FILE = process.env.VAULT_RESOURCES_FILE
+  || path.join(ROOT, 'resources/vault-resources.local.json');
+
 let vaultMasterKey = process.env.VAULT_MASTER_KEY;
 let vaultToken = process.env.VAULT_TOKEN;
 let storageFile = path.resolve(ROOT, process.env.VAULT_STORAGE_FILE || 'data/vault/vault.enc');
