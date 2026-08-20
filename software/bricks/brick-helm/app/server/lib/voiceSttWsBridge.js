@@ -23,7 +23,12 @@ function sttDebug(...args) {
 function authFromUpgradeRequest(req) {
   const cookies = parseCookie(req.headers.cookie || '');
   const bearer = String(req.headers.authorization || '').replace(/^Bearer\s+/i, '');
-  const token = cookies.ca_token || bearer || '';
+  let queryToken = '';
+  try {
+    const url = new URL(req.url || '/', 'http://localhost');
+    queryToken = url.searchParams.get('token') || url.searchParams.get('auth') || '';
+  } catch { /* ignore */ }
+  const token = cookies.ca_token || bearer || queryToken || '';
   if (!token) return null;
   try {
     return jwt.verify(token, config.jwtSecret);

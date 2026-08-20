@@ -118,6 +118,50 @@ async function run() {
     await page.screenshot({ path: path.join(SCREENSHOT_DIR, '06-ged-interface.png') });
     console.log('  ✓ Interface GED (/ged) vérifiée');
 
+    // -------------------------------------------------------------
+    // Step 6: Audio Playback & 401 Prevention Verification
+    // -------------------------------------------------------------
+    console.log('\n▶ [Step 6] Testing Audio Play & 401 Unauthorized Prevention...');
+    
+    // Return to console session
+    await page.goto(`${BASE_URL}/console`, { waitUntil: 'domcontentloaded', timeout: 15000 });
+    await page.waitForTimeout(2000);
+
+    // Track any 401 status code
+    let unauthorizedDetected = false;
+    page.on('response', (response) => {
+      if (response.status() === 401) {
+        unauthorizedDetected = true;
+        console.error(`  ❌ 401 Unauthorized intercepté sur : ${response.url()}`);
+      }
+    });
+
+    // Look for any play button in the timeline or chat interface
+    const playButton = page.locator('button[aria-label*="Lire"], button[title*="Lire"], button:has(svg.lucide-play)').first();
+    if (await playButton.count() > 0 && await playButton.isVisible()) {
+      await playButton.click();
+      await page.waitForTimeout(2000);
+      console.log('  ✓ Clic sur le bouton de lecture audio (Play) exécuté');
+    } else {
+      // Test direct voice status / TTS authorization API with the active session
+      const voiceCheck = await page.evaluate(async () => {
+        const token = localStorage.getItem('helm-auth-token') || '';
+        const res = await fetch('/api/voice/status', {
+          headers: token ? { Authorization: `Bearer ${token}` } : {},
+        });
+        return { status: res.status, ok: res.ok };
+      });
+      if (voiceCheck.status === 401) throw new Error('401 Unauthorized sur /api/voice/status');
+      console.log(`  ✓ API Voix autorisée avec succès (status HTTP: ${voiceCheck.status})`);
+    }
+
+    if (unauthorizedDetected) {
+      throw new Error('Erreur 401 Unauthorized détectée pendant la lecture audio');
+    }
+
+    await page.screenshot({ path: path.join(SCREENSHOT_DIR, '07-voice-play-tested.png') });
+    console.log('  ✓ Aucune erreur 401 lors de l’action de lecture audio');
+
     console.log('\n===============================================================');
     console.log(' 🏆 TOUS LES SCÉNARIOS E2E PLAYWRIGHT SONT VALIDÉS À 100% !');
     console.log('===============================================================');

@@ -310,10 +310,13 @@ router.post('/voice/tts', authMiddleware, async (req, res) => {
   } catch (err) {
     console.error('[voice/tts]', err.message || err);
     const upstream = Number(err.status) || 502;
-    const status = [400, 401, 402, 403, 404, 422].includes(upstream) ? upstream : 502;
+    const status = upstream === 401 ? 502 : ([400, 402, 403, 404, 422].includes(upstream) ? upstream : 502);
+    const errorMsg = upstream === 401
+      ? 'Clé API du fournisseur de voix (Cartesia/Deepgram/ElevenLabs) invalide ou expirée'
+      : (err.message || 'Synthèse vocale échouée');
     res.status(status).json({
       ok: false,
-      error: err.message || 'Synthèse vocale échouée',
+      error: errorMsg,
       code: err.data?.detail?.code || err.data?.code || undefined,
       detail: err.data?.detail || undefined,
     });

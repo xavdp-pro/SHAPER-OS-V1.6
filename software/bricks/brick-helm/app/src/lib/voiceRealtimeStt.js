@@ -1,5 +1,6 @@
 import { VOICE_SEND_KEYTERMS } from './voiceSendTrigger.js';
 import { debugLog } from './clientDebugLog.js';
+import { getActiveLocale, getAuthToken } from '../api/client.js';
 
 const TARGET_SAMPLE_RATE = 16000;
 /** ~85 ms @ 48 kHz — Deepgram recommends continuous small PCM frames. */
@@ -45,7 +46,9 @@ export async function acquireMicMediaStream() {
 
 function voiceSttStreamUrl() {
   const proto = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-  return `${proto}//${window.location.host}/api/voice/stt-stream`;
+  const token = getAuthToken();
+  const q = token ? `?token=${encodeURIComponent(token)}` : '';
+  return `${proto}//${window.location.host}/api/voice/stt-stream${q}`;
 }
 
 function normalizeForCompare(s) {

@@ -1,9 +1,11 @@
-import { getActiveLocale } from '../api/client.js';
+import { getActiveLocale, getAuthToken } from '../api/client.js';
 import { createPcmStreamPlayer } from './pcmStreamPlayer.js';
 
 function voiceTtsStreamUrl() {
   const proto = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-  return `${proto}//${window.location.host}/api/voice/tts-stream`;
+  const token = getAuthToken();
+  const q = token ? `?token=${encodeURIComponent(token)}` : '';
+  return `${proto}//${window.location.host}/api/voice/tts-stream${q}`;
 }
 
 /**
