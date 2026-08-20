@@ -10,6 +10,8 @@
 export function createRunState() {
   return {
     fullText: '',
+    lastError: '',
+    lastReasoning: '',
     /** partID -> 'text' | 'reasoning' | 'tool' | … (deltas don't repeat it) */
     partTypes: new Map(),
     /** messageIDs whose role is assistant — a user part is not the reply */
@@ -119,7 +121,8 @@ export function translateEvent(evt, { state: st, conversation: conv }) {
     if (info.role === 'assistant' && info.id) st.assistantMsgs.add(info.id);
     if (info.error) {
       const errMsg = info.error?.data?.message || info.error?.message || (typeof info.error === 'string' ? info.error : JSON.stringify(info.error));
-      st.fullText = `⚠️ Erreur OpenCode : ${errMsg}`;
+      st.lastError = `⚠️ ${errMsg}`;
+      st.fullText = st.lastError;
       return [{
         type: 'response',
         conversation: conv,
@@ -134,10 +137,16 @@ export function translateEvent(evt, { state: st, conversation: conv }) {
     const part = props.part || {};
     if (part.id && part.type) st.partTypes.set(part.id, part.type);
 
-    if (part.type === 'tool') return toolPartEvents(conv, st, part);
+    if (part.type === 'tool') {
+      if (part.state?.status === 'error') {
+        st.lastError = `⚠️ Erreur outil ${part.tool || 'tool'} : ${part.state.error || part.state.output || 'Interrompu'}`;
+      }
+      return toolPartEvents(conv, st, part);
+    }
 
     if ((part.type === 'reasoning' || part.type === 'thought' || part.type === 'thinking') && (part.text || part.reasoning_content)) {
       const reasoningText = part.text || part.reasoning_content || '';
+      st.lastReasoning = reasoningText;
       return [{
         type: 'thinking',
         conversation: conv,
@@ -177,6 +186,7 @@ export function translateEvent(evt, { state: st, conversation: conv }) {
     );
 
     if (isReasoning) {
+      st.lastReasoning = (st.lastReasoning || '') + delta;
       return [{ type: 'thinking', conversation: conv, composer_id: sessionID, delta }];
     }
     if ((partType === 'text' || field === 'text') && (props.messageID ? st.assistantMsgs.has(props.messageID) : true)) {
@@ -195,9 +205,25 @@ export function translateEvent(evt, { state: st, conversation: conv }) {
   if (type === 'session.idle') {
     if (!st.running) return [];
     st.running = false;
+
+    // Guaranteed non-empty final response so user and voice engine are never left in the dark
+    if (!st.fullText.trim()) {
+      if (st.lastError) {
+        st.fullText = st.lastError;
+      } else {
+        st.fullText = "L'action a été exécutée par l'agent.";
+      }
+    }
+
     return [
       ...closeOpenTools(conv, st, sessionID),
       { type: 'thinking', conversation: conv, subtype: 'completed', composer_id: sessionID },
+      {
+        type: 'response',
+        conversation: conv,
+        composer_id: sessionID,
+        text: st.fullText,
+      },
       {
         type: 'response_complete',
         conversation: conv,
