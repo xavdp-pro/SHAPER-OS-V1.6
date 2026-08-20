@@ -1,10 +1,40 @@
 # SHAPER OS V1.6
 
+## Step 0 — Feed this repo to your AI agent (do this first)
+
+Shaper OS is installed **with** an IDE agent (Cursor, Claude Code, etc.) — not by hand-copying a 50-step tutorial.
+
+1. **Clone** and open the folder in your IDE:
+
+   ```bash
+   git clone https://github.com/xavdp-pro/SHAPER-OS-V1.6.git
+   cd SHAPER-OS-V1.6
+   ```
+
+2. **Paste this intent** to your agent (full version: [`examples/agent-KEY-COLLECTION-INTENT.md`](./examples/agent-KEY-COLLECTION-INTENT.md)):
+
+   > You are my Shaper OS install agent. Read `LAW.md`, `START-HERE.md`, `FOR-THE-AGENT.md`, and `KEYS-AND-ACCOUNTS.md`. Generate vault keys locally. Tell me which external API keys I need. For each one, open the correct vendor page (use your browser tool) and guide me step by step. Write secrets only to `software/.env` — never to git. Then run the install pipeline and stop on any red test.
+
+3. **Let the agent work:**
+   - **Tier-a (local DEV):** agent generates `VAULT_MASTER_KEY` + `VAULT_TOKEN` — **no paid signups**
+   - **Tier-b (voice + public URL, later):** agent opens the right sites and helps you paste Deepgram, Groq, Cloudflare keys
+
+**All vendor URLs and checklists:** [`KEYS-AND-ACCOUNTS.md`](./KEYS-AND-ACCOUNTS.md)
+
+| Tier | External signups | Agent opens |
+| :--- | :--- | :--- |
+| **a — local stack** | None | — (generates vault keys with `openssl`) |
+| **b — voice + tunnel** | Deepgram, Groq, Cloudflare | [Deepgram console](https://console.deepgram.com/) · [Groq keys](https://console.groq.com/keys) · [Cloudflare Zero Trust](https://one.dash.cloudflare.com/) |
+
+OpenCode free models need **no API key** for tier-a — see [OpenCode Zen](https://opencode.ai/docs/zen/).
+
+---
+
 **One pillar. Your business. Your assistant.**
 
 Install once on **your** Linux machine. Then shape what you actually need — ERP, CRM, online shop, association back-office, automations, voice cockpit — with an **AI assistant dedicated to your context**, not a generic chatbot.
 
-**One git clone** = full kit + runnable software → [`START-HERE.md`](./START-HERE.md)
+**Full install path:** [`START-HERE.md`](./START-HERE.md) · **Agent instructions:** [`FOR-THE-AGENT.md`](./FOR-THE-AGENT.md)
 
 **See it applied to real businesses:** [shaper.xavdp.pro](https://shaper.xavdp.pro)
 
@@ -108,6 +138,9 @@ Law: [`LAW.md`](./LAW.md) · [`software/RULES.md`](./software/RULES.md)
 
 Same idea: **foundation first, then build on top** — ERP, CRM, shop, association tool, automation — until it matches how you really work.
 
+**Looking for short- and long-term missions** — install, shape, or operate Shaper OS for your business (infra, ERP/CRM, shop, automation, voice).  
+**Contact:** [xavier@xavdp.pro](mailto:xavier@xavdp.pro) · [shaper.xavdp.pro](https://shaper.xavdp.pro)
+
 ---
 
 ## Quick start
@@ -166,5 +199,5 @@ Full doctrine: [`software/MANIFESTO.md`](./software/MANIFESTO.md) · architectur
 
 ---
 
-**Author:** Xavier DE POORTER / XDP LLC · **License:** [CC BY-SA 4.0](./LICENSE)  
+**Author:** Xavier DE POORTER / XDP LLC · **Missions:** short & long term — [xavier@xavdp.pro](mailto:xavier@xavdp.pro) · **License:** [CC BY-SA 4.0](./LICENSE)  
 **AI-assisted:** see [`NOTICE.md`](./NOTICE.md)

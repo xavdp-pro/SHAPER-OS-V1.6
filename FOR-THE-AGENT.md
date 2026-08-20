@@ -11,10 +11,11 @@ First install = **DEV**. Not production.
 
 1. [`LAW.md`](./LAW.md)
 2. [`START-HERE.md`](./START-HERE.md)
-3. This file
-4. [`PROOF.md`](./PROOF.md)
-5. `software/RULES.md` · `software/docs/PERIMETERS.md` · `software/topology.json`
-6. Brick `INTENT.md` files listed in the universe manifest
+3. [`KEYS-AND-ACCOUNTS.md`](./KEYS-AND-ACCOUNTS.md) — which keys, which URLs, tier-a vs tier-b
+4. This file
+5. [`PROOF.md`](./PROOF.md)
+6. `software/RULES.md` · `software/docs/PERIMETERS.md` · `software/topology.json`
+7. Brick `INTENT.md` files listed in the universe manifest
 
 Do not implement from obsolete docs. Do not add `/talk` or `/voice`.
 
@@ -44,6 +45,20 @@ openssl rand -hex 24   # VAULT_TOKEN
 Write `software/.env`. Never commit secrets. Never paste keys from old repos into `.env`.
 
 ---
+
+## External keys (tier-b) — browser-assisted
+
+Read [`KEYS-AND-ACCOUNTS.md`](./KEYS-AND-ACCOUNTS.md). If the human asks for voice or a public URL:
+
+1. Confirm tier-a is green (`npm run test:live`).
+2. Use the IDE **browser** (if available) to open **one vendor site at a time**:
+   - Deepgram → https://console.deepgram.com/ → API Keys
+   - Groq → https://console.groq.com/keys
+   - Cloudflare tunnel → https://one.dash.cloudflare.com/ → Networks → Tunnels
+3. Human pastes into `software/.env` or `sav/tunnel/token` — **never** into chat or git.
+4. Deploy tier-b (`manifest.tier-b.json`, `WITH_HELM=1`) and run `npm run test:live:helm`.
+
+Do **not** ask for Deepgram/Groq/Cloudflare during tier-a install.
 
 ## Pipeline (DEV) — do not reorder
 

@@ -3,6 +3,9 @@
 You know Linux. You use an IDE with a capable AI agent.  
 You do **not** know this project. That is expected.
 
+**First move:** open this repo in your IDE and paste [`examples/agent-KEY-COLLECTION-INTENT.md`](./examples/agent-KEY-COLLECTION-INTENT.md) to your agent.  
+Keys and vendor URLs: [`KEYS-AND-ACCOUNTS.md`](./KEYS-AND-ACCOUNTS.md).
+
 Tell the agent: **Read LAW.md and START-HERE.md, then install a local DEV stack. Do not skip tests.**
 
 After it is up, read [`CONCEPTS.md`](./CONCEPTS.md) and [`LIFECYCLE.md`](./LIFECYCLE.md). Those are the reference. This page is only **how to get something running**.
@@ -59,15 +62,18 @@ SHAPER-OS-V1.6/          ← repo root (kit docs here)
 Linux · git · Node.js >= 20 · Podman >= 4 · curl · openssl
 ```
 
-**Local first (tier-a):** no paid cloud required. OpenCode free models sit inside the bridge image.
+**Local first (tier-a):** no paid cloud required. OpenCode free models sit inside the bridge image — [no API key](https://opencode.ai/docs/zen/).
 
 **Public URL + voice (tier-b, after local health is green):**
 
-| Account | Why |
-| :--- | :--- |
-| Cloudflare | Domain DNS + Zero Trust **tunnel token** |
-| Deepgram | Speech ↔ text |
-| Groq | Fast “Got it…” — not the main thinking model |
+| Account | Why | Get key |
+| :--- | :--- | :--- |
+| Cloudflare | Domain DNS + Zero Trust **tunnel token** | [Zero Trust → Tunnels](https://one.dash.cloudflare.com/) |
+| Deepgram | Speech ↔ text | [console.deepgram.com](https://console.deepgram.com/) → API Keys |
+| Groq | Fast “Got it…” — not the main thinking model | [console.groq.com/keys](https://console.groq.com/keys) |
+
+Full table (optional keys, R2, Stripe later): [`KEYS-AND-ACCOUNTS.md`](./KEYS-AND-ACCOUNTS.md).  
+Agent should use IDE **browser** to open each link and guide you — see [`examples/agent-KEY-COLLECTION-INTENT.md`](./examples/agent-KEY-COLLECTION-INTENT.md).
 
 Keys → `software/.env` from [`.env.example`](./.env.example) (same template as [`software/.env.example`](./software/.env.example)).  
 Optional universe overrides: [`examples/universe.env.example`](./examples/universe.env.example) → `<univ_slug>-dev/deploy/env`.  
