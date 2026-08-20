@@ -92,9 +92,11 @@ export class MaestroScheduler {
    * @param {string} [taskConfig.beatMessage]
    */
   registerAgentTask(taskConfig) {
+    const slug = taskConfig.slug || taskConfig.id || taskConfig.name || 'agent-task';
     const entry = this.registerPodMail({
       ...taskConfig,
-      mailbox: taskConfig.mailbox || `${taskConfig.slug}@local`,
+      slug,
+      mailbox: taskConfig.mailbox || `${slug}@local`,
       port: taskConfig.port || 80,
     });
     entry.kind = taskConfig.kind || 'bridge';
