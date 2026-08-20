@@ -22,7 +22,6 @@
 | [`../bricks/brick-helm/app/VISION.md`](../bricks/brick-helm/app/VISION.md) | Product phases (canonical) |
 | [`../bricks/brick-helm/app/mds/VISION.md`](../bricks/brick-helm/app/mds/VISION.md) | Mirror for agent index |
 | [`HELM-WEB-CHAT.md`](./HELM-WEB-CHAT.md) | Helm v2 web chat integration |
-| [`UNIV-ZESTP3-DEPLOYMENT-AND-FIXES-JOURNAL.md`](./UNIV-ZESTP3-DEPLOYMENT-AND-FIXES-JOURNAL.md) | **Journal des réalisations & correctifs univ-zestp3** |
 | [`../bricks/brick-helm/app/mds/INDEX-AGENTS.md`](../bricks/brick-helm/app/mds/INDEX-AGENTS.md) | Agent working docs index |
 
 ### Historical / archived (do not treat as active law)
