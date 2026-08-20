@@ -571,3 +571,50 @@ export async function playSpeechChunkPipeline(chunks, fetchChunk, opts = {}) {
     await playBase64Audio(payload.audioBase64, payload.contentType || 'audio/mpeg', { signal });
   }
 }
+
+/**
+ * Universal browser Web Speech synthesis fallback (works offline / with zero cloud keys).
+ */
+export function speakViaBrowserSpeechSynthesis(text, { lang = 'fr-FR', signal } = {}) {
+  return new Promise((resolve) => {
+    if (typeof window === 'undefined' || !window.speechSynthesis) {
+      resolve(false);
+      return;
+    }
+    window.speechSynthesis.cancel();
+    const cleanText = String(text || '').trim();
+    if (!cleanText) {
+      resolve(false);
+      return;
+    }
+    const utter = new SpeechSynthesisUtterance(cleanText);
+    const l = String(lang || 'fr').toLowerCase();
+    utter.lang = l.startsWith('en') ? 'en-US' : (l.startsWith('es') ? 'es-ES' : 'fr-FR');
+    utter.rate = 1.0;
+    utter.pitch = 1.0;
+
+    let settled = false;
+    const finish = (result = true) => {
+      if (!settled) {
+        settled = true;
+        resolve(result);
+      }
+    };
+
+    utter.onend = () => finish(true);
+    utter.onerror = () => finish(false);
+
+    if (signal) {
+      signal.addEventListener('abort', () => {
+        try { window.speechSynthesis.cancel(); } catch { /* ignore */ }
+        finish(false);
+      }, { once: true });
+    }
+
+    try {
+      window.speechSynthesis.speak(utter);
+    } catch {
+      finish(false);
+    }
+  });
+}

@@ -9,7 +9,7 @@ import {
 } from '../lib/voiceCursorLoop.js';
 import { stripLeadingVoiceAckForTts } from '../lib/voiceAckStrip.js';
 import { playBase64Audio } from '../lib/voiceMic.js';
-import { unlockAudioPlayback, primeMicReadyChime, playGoConfirmBeep, playClearConfirmBeep, playStopConfirmBeep, playMicOffBeep, playSpeakerOnBeep, playSpeakerOffBeep, getSharedAudioContext } from '../lib/voicePlaybackPipeline.js';
+import { unlockAudioPlayback, primeMicReadyChime, playGoConfirmBeep, playClearConfirmBeep, playStopConfirmBeep, playMicOffBeep, playSpeakerOnBeep, playSpeakerOffBeep, getSharedAudioContext, speakViaBrowserSpeechSynthesis } from '../lib/voicePlaybackPipeline.js';
 import { mergeTinySpeechChunks } from '../lib/voicePlaybackPipeline.js';
 import { createRealtimeSttSession } from '../lib/voiceRealtimeStt.js';
 import { debugLog } from '../lib/clientDebugLog.js';
@@ -1630,7 +1630,7 @@ export function useChatVoice({
     clearKaraoke();
     setActiveReplayId(id);
     activeReplayIdRef.current = id;
-    setPaused(false);
+          setPaused(false);
 
     // Deepgram / ElevenLabs / HTTP fallback: no Cartesia WS
     if (ttsStreamRef.current !== true) {
@@ -1642,29 +1642,45 @@ export function useChatVoice({
       try {
         for (const chunk of chunks) {
           if (replayGenRef.current !== gen || s.abort.signal.aborted) break;
-          const { ok, data } = await voiceTts(chunk);
-          if (!ok || !data?.audioBase64) {
-            throw new Error(data?.error || 'Synthèse vocale échouée');
-          }
-          if (replayGenRef.current !== gen || s.abort.signal.aborted) break;
-          const karaokeBase = httpKaraokeBaseRef.current;
-          let karaokeDuration = 0;
-          const karaokeReady = primeHttpKaraoke(chunk, karaokeBase)
-            .then((d) => { karaokeDuration = d; })
-            .catch(() => { /* karaoke is best-effort */ });
+          let played = false;
           try {
-            await playBase64Audio(data.audioBase64, data.contentType || 'audio/mpeg', {
+            const { ok, data } = await voiceTts(chunk);
+            if (ok && data?.audioBase64) {
+              if (replayGenRef.current !== gen || s.abort.signal.aborted) break;
+              const karaokeBase = httpKaraokeBaseRef.current;
+              let karaokeDuration = 0;
+              const karaokeReady = primeHttpKaraoke(chunk, karaokeBase)
+                .then((d) => { karaokeDuration = d; })
+                .catch(() => { /* karaoke is best-effort */ });
+              try {
+                await playBase64Audio(data.audioBase64, data.contentType || 'audio/mpeg', {
+                  signal: s.abort.signal,
+                  audioRef: htmlAudioRef,
+                });
+                played = true;
+              } finally {
+                await karaokeReady;
+                httpKaraokeBaseRef.current = karaokeBase + karaokeDuration;
+              }
+            }
+          } catch (cloudErr) {
+            console.warn('[TTS] Cloud synthesis failed, falling back to browser synthesis:', cloudErr.message);
+          }
+
+          if (!played && !s.abort.signal.aborted && replayGenRef.current === gen) {
+            await speakViaBrowserSpeechSynthesis(chunk, {
+              lang: getActiveLocale(),
               signal: s.abort.signal,
-              audioRef: htmlAudioRef,
             });
-          } finally {
-            await karaokeReady;
-            httpKaraokeBaseRef.current = karaokeBase + karaokeDuration;
           }
         }
       } catch (err) {
         if (!isAbortError(err)) {
-          pushToast(err instanceof Error ? err.message : tRef.current('voice.toast.replayFailed'), { type: 'error' });
+          // Fallback to browser speech synthesis
+          await speakViaBrowserSpeechSynthesis(speech, {
+            lang: getActiveLocale(),
+            signal: s.abort.signal,
+          });
         }
       } finally {
         if (replayGenRef.current === gen) {
@@ -1699,9 +1715,7 @@ export function useChatVoice({
           maybeRescaleSentences(sec);
         },
         onError: (err) => {
-          if (!isAbortError(err)) {
-            pushToast(err.message || tRef.current('voice.toast.replayFailed'), { type: 'error' });
-          }
+          console.warn('[TTS WS] Stream error:', err.message);
         },
       });
       streamSessionRef.current = session;
@@ -1745,6 +1759,13 @@ export function useChatVoice({
       if (streamSessionRef.current) {
         try { streamSessionRef.current.cancel(); } catch { /* ignore */ }
         streamSessionRef.current = null;
+      }
+      if (!isAbortError(err) && replayGenRef.current === gen && !s.abort.signal.aborted) {
+        // Stream failed or key invalid -> fallback to browser speech synthesis
+        await speakViaBrowserSpeechSynthesis(speech, {
+          lang: getActiveLocale(),
+          signal: s.abort.signal,
+        });
       }
       if (replayGenRef.current === gen) {
         playingRef.current = false;
