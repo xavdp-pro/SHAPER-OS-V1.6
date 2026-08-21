@@ -87,14 +87,14 @@ export default function HeaderActionsMenu({
   };
 
   return (
-    <div className="relative" ref={menuRef}>
+    <div className="relative shrink-0" ref={menuRef}>
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
         aria-expanded={menuOpen}
         aria-haspopup="dialog"
         title={t('options.title')}
-        className={`h-9 w-9 rounded-lg border flex items-center justify-center transition cursor-pointer ${
+        className={`h-9 w-9 rounded-lg border flex items-center justify-center transition cursor-pointer shrink-0 ${
           menuOpen
             ? 'bg-white/15 text-white border-white/25 ring-2 ring-violet-400/30'
             : 'bg-white/5 text-slate-300 border-white/10 hover:bg-white/10 hover:text-white'

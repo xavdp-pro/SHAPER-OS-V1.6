@@ -101,11 +101,11 @@ export default function ActiveModelLabel({
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className={`group inline-flex items-center gap-1 py-0.5 px-1.5 rounded-md hover:bg-white/10 text-slate-300 hover:text-white transition cursor-pointer text-[11px] sm:text-xs font-medium leading-tight ${className}`}
+        className={`group inline-flex items-center gap-1 py-0.5 px-1.5 rounded-md hover:bg-white/10 text-slate-300 hover:text-white transition cursor-pointer text-[11px] sm:text-xs font-medium leading-tight max-w-full ${className}`}
         title="Changer de modèle IA"
       >
-        <span className="truncate max-w-[40vw] sm:max-w-[14rem]">{text}</span>
-        <ChevronDown size={12} className={`text-slate-400 group-hover:text-white transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+        <span className="truncate max-w-[22vw] xs:max-w-[30vw] sm:max-w-[14rem]">{text}</span>
+        <ChevronDown size={12} className={`text-slate-400 group-hover:text-white transition-transform shrink-0 ${isOpen ? 'rotate-180' : ''}`} />
       </button>
 
       {isOpen && (

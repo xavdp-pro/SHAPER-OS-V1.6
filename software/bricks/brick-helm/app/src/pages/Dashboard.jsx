@@ -1882,9 +1882,9 @@ export default function Dashboard() {
                 <span className="text-[9px] sm:text-[10px] text-emerald-400 font-normal shrink-0">{t('status.live')}</span>
               )}
             </p>
-            <div className="flex items-center gap-1 sm:gap-1.5 mt-0.5 text-[10px] sm:text-[11px] text-slate-400 leading-tight">
-              <span className="font-semibold text-brand-400">OpenCode</span>
-              <span>·</span>
+            <div className="flex items-center gap-1 sm:gap-1.5 mt-0.5 text-[10px] sm:text-[11px] text-slate-400 leading-tight min-w-0">
+              <span className="hidden sm:inline font-semibold text-brand-400">OpenCode</span>
+              <span className="hidden sm:inline">·</span>
               <ActiveModelLabel
                 conversation={activePath}
                 conversationModel={conversations.find((c) => (c.path || c.id) === activePath)?.model || null}
@@ -1896,11 +1896,32 @@ export default function Dashboard() {
               />
             </div>
           </div>
-          <div className="shrink-0">
+          <div className="shrink-0 flex items-center gap-1 sm:gap-1.5">
             <InteractionModeSelector value={interactionMode} onChange={setMobileMode} />
-          </div>
-          <div className="shrink-0">
             <LanguageSelector compact />
+            <HeaderActionsMenu
+              filters={viewFilters}
+              onToggleFilter={handleToggleFilter}
+              onCopy={handleCopyConversation}
+              copying={copying}
+              copyDisabled={!activePath || !timeline.length || copying}
+              onStop={handleStopCli}
+              stopping={stopping}
+              agentBusy={agentBusy}
+              onClear={() => setClearConfirmOpen(true)}
+              canClear={Boolean(activePath && timeline.length)}
+              onRefresh={reloadPage}
+              polling={polling}
+              karaokeOn={karaokeOn}
+              karaokeSupported={karaokeSupported}
+              karaokeGrain={karaokeGrain}
+              onToggleKaraoke={toggleKaraoke}
+              forceOpen={helpForceOptions}
+              cursorPure={cursorPure}
+              onToggleCursorPure={toggleCursorPure}
+              timelinePagination={timelinePagination}
+              onToggleTimelinePagination={toggleTimelinePagination}
+            />
           </div>
           {!hideChatVisual && (
           <>
@@ -1931,29 +1952,6 @@ export default function Dashboard() {
           </button>
           </>
           )}
-          <HeaderActionsMenu
-            filters={viewFilters}
-            onToggleFilter={handleToggleFilter}
-            onCopy={handleCopyConversation}
-            copying={copying}
-            copyDisabled={!activePath || !timeline.length || copying}
-            onStop={handleStopCli}
-            stopping={stopping}
-            agentBusy={agentBusy}
-            onClear={() => setClearConfirmOpen(true)}
-            canClear={Boolean(activePath && timeline.length)}
-            onRefresh={reloadPage}
-            polling={polling}
-            karaokeOn={karaokeOn}
-            karaokeSupported={karaokeSupported}
-            karaokeGrain={karaokeGrain}
-            onToggleKaraoke={toggleKaraoke}
-            forceOpen={helpForceOptions}
-            cursorPure={cursorPure}
-            onToggleCursorPure={toggleCursorPure}
-            timelinePagination={timelinePagination}
-            onToggleTimelinePagination={toggleTimelinePagination}
-          />
         </header>
 
         <div className="shrink-0 px-3 pt-2 md:hidden">
