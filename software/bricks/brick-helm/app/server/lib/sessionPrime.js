@@ -61,11 +61,6 @@ function languageThinkingLine(lang) {
 }
 
 function appendReferenceBlocks(parts, lang, brief, contextPath, engineLabel) {
-  const bootstrap = contextBootstrapDirective(contextPath, lang);
-  if (bootstrap) {
-    parts.push(bootstrap);
-    return;
-  }
   if (brief) {
     const label = lang === 'en'
       ? 'Operator briefing (standing instructions — follow them):'
