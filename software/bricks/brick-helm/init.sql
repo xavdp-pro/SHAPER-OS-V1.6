@@ -39,27 +39,18 @@ CREATE TABLE IF NOT EXISTS app_settings (
   updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- 3. Timelines / Conversations
+-- 3. Timelines / Conversations (Stockage complet des échanges & métadonnées)
 CREATE TABLE IF NOT EXISTS timelines (
-  id VARCHAR(64) PRIMARY KEY,
-  user_id INT UNSIGNED NULL,
-  title VARCHAR(255) NOT NULL DEFAULT 'Nouvelle Session',
-  is_pinned TINYINT(1) NOT NULL DEFAULT 0,
-  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  INDEX idx_user_id (user_id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- 4. Messages des Timelines
-CREATE TABLE IF NOT EXISTS timeline_messages (
-  id VARCHAR(64) PRIMARY KEY,
-  timeline_id VARCHAR(64) NOT NULL,
-  role ENUM('user', 'assistant', 'system', 'tool') NOT NULL,
-  content MEDIUMTEXT NOT NULL,
-  metadata JSON NULL,
-  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  INDEX idx_timeline_id (timeline_id),
-  CONSTRAINT fk_timeline FOREIGN KEY (timeline_id) REFERENCES timelines(id) ON DELETE CASCADE
+  conv_hash CHAR(24) NOT NULL,
+  conv_path VARCHAR(512) NOT NULL,
+  items LONGTEXT NOT NULL,
+  updated_at VARCHAR(32) NOT NULL,
+  folder VARCHAR(128) DEFAULT 'Général',
+  archived_at VARCHAR(32) DEFAULT NULL,
+  pinned TINYINT(1) DEFAULT 0,
+  model VARCHAR(128) DEFAULT NULL,
+  PRIMARY KEY (conv_hash),
+  KEY idx_path (conv_path(191))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- 5. Tâches Maestro
