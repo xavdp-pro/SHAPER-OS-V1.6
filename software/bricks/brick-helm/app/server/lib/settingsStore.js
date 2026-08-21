@@ -50,7 +50,7 @@ const TTS_PROVIDER_KEY = 'tts_provider';
 const TTS_PROVIDERS = new Set(['cartesia', 'deepgram', 'elevenlabs']);
 
 const DEFAULT_ENGINE_MODELS = {
-  opencode: 'opencode/deepseek-v4-flash-free',
+  opencode: process.env.OPENCODE_MODEL || 'groq/llama-3.3-70b-versatile',
   agy: 'gemini-3.7-flash',
   cursor: 'composer-2.5',
   claude: 'claude-3-7-sonnet',

@@ -63,12 +63,22 @@ echo -n "$BRIDGE_AUTH_TOKEN" > "$UNIV9/sav/opencode-bridge/token"
 
 podman run -d --name univ9-bridge-opencode --network "$NET" --replace \
   -e OPENCODE_BRIDGE_PORT="$OPENCODE_BRIDGE_PORT" \
+  -e OPENCODE_BRIDGE_BIND=0.0.0.0 \
   -e OPENCODE_SERVE_PORT="$OPENCODE_SERVE_PORT" \
-  -e OPENCODE_MODEL="opencode/deepseek-v4-flash-free" \
-  -e TOKEN_FILE=/data/opencode-bridge/token \
+  -e OPENCODE_BIN=/usr/local/bin/opencode \
   -e OPENCODE_WS_BASE=/data/opencode-ws \
-  -v "$UNIV9/sav/opencode-bridge:/data/opencode-bridge:rw,z" \
-  -v "$UNIV9/sav/opencode-ws:/data/opencode-ws:rw,z" \
+  -e OPENCODE_MODEL \
+  -e BRIDGE_OPENCODE_STUB \
+  -e OPENCODE_BRIDGE_TOKEN="$BRIDGE_AUTH_TOKEN" \
+  -e HOME=/root \
+  -e TOKEN_FILE=/root/.config/opencode-bridge/token \
+  -e GROQ_API_KEY \
+  -e DEEPSEEK_API_KEY \
+  -e ANTHROPIC_API_KEY \
+  -e OPENAI_API_KEY \
+  -e GEMINI_API_KEY \
+  -v "$UNIV9/sav/opencode-ws:/data/opencode-ws:Z" \
+  -v "$UNIV9/sav/opencode-bridge:/root/.config/opencode-bridge:Z" \
   localhost/shaper-bridge-opencode:latest
 
 echo "[podman-up] 4. Démarrage de univ9-queue sur :$QUEUE_PORT..."

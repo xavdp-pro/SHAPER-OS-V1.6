@@ -20,16 +20,14 @@ export default function ActiveModelLabel({
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef(null);
 
-  const families = modelFamilies.length
+    const families = modelFamilies.length
     ? modelFamilies
     : [
-      { id: 'opencode/nemotron-3-ultra-free', label: 'Nemotron 3 Ultra (Gratuit)', speed: '~110 t/s · 1M Ctx' },
-      { id: 'opencode/deepseek-v4-flash-free', label: 'DeepSeek V4 Flash (Gratuit)', speed: '~180 t/s · Flash' },
-      { id: 'opencode/nemotron-3.5-lightning-free', label: 'Nemotron 3.5 Lightning (Gratuit)', speed: '~250 t/s · Ultra Rapide' },
-      { id: 'opencode/mimo-v2.5-free', label: 'MiMo V2.5 (Gratuit)', speed: '~100 t/s · Multimodal' },
-      { id: 'opencode/laguna-s-2.1-free', label: 'Laguna S 2.1 (Gratuit)', speed: '~90 t/s · Docs' },
-      { id: 'opencode/hy3-free', label: 'HY3 (Gratuit)', speed: '~120 t/s · Polyvalent' },
-      { id: 'opencode/big-pickle', label: 'Big Pickle (Gratuit)', speed: '~75 t/s · Raisonnement' },
+      { id: 'groq/openai/gpt-oss-120b', label: 'GPT OSS 120B (Groq)', speed: '~250 t/s · Ultra Rapide' },
+      { id: 'groq/openai/gpt-oss-20b', label: 'GPT OSS 20B (Groq)', speed: '~500 t/s · Instantané' },
+      { id: 'opencode/big-pickle', label: 'Big Pickle (Gratuit)', speed: '~75 t/s · Gratuit' },
+      { id: 'deepseek/deepseek-chat', label: 'DeepSeek V3 (Direct)', speed: '~70 t/s · Précis' },
+      { id: 'deepseek/deepseek-reasoner', label: 'DeepSeek R1 Raisonnement', speed: '~45 t/s · Raisonnement' },
     ];
 
   const activeModelId = conversation ? (conversationModel || modelFamily) : modelFamily;

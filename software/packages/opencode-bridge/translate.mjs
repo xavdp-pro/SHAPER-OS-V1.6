@@ -121,14 +121,28 @@ export function translateEvent(evt, { state: st, conversation: conv }) {
     if (info.role === 'assistant' && info.id) st.assistantMsgs.add(info.id);
     if (info.error) {
       const errMsg = info.error?.data?.message || info.error?.message || (typeof info.error === 'string' ? info.error : JSON.stringify(info.error));
-      st.lastError = `⚠️ ${errMsg}`;
+      console.error(`[opencode-bridge] Model error in ${conv} (${sessionID}):`, errMsg);
+      st.lastError = `⚠️ Erreur modèle : ${errMsg}`;
       st.fullText = st.lastError;
-      return [{
-        type: 'response',
-        conversation: conv,
-        composer_id: sessionID,
-        text: st.fullText,
-      }];
+      st.running = false;
+      return [
+        {
+          type: 'response',
+          conversation: conv,
+          composer_id: sessionID,
+          text: st.fullText,
+        },
+        {
+          type: 'response_complete',
+          conversation: conv,
+          composer_id: sessionID,
+          chat_id: sessionID,
+          text: st.fullText,
+          exit: 1,
+          error: errMsg,
+        },
+        { type: 'run_complete', conversation: conv, composer_id: sessionID },
+      ];
     }
     return [];
   }
@@ -175,6 +189,7 @@ export function translateEvent(evt, { state: st, conversation: conv }) {
     const { partID, field, delta } = props;
     if (!delta) return [];
     const partType = st.partTypes.get(partID);
+    if (!partType) return [];
     const isReasoning = (
       field === 'reasoning_content'
       || field === 'reasoning'
@@ -186,10 +201,13 @@ export function translateEvent(evt, { state: st, conversation: conv }) {
     );
 
     if (isReasoning) {
+      st.running = true;
       st.lastReasoning = (st.lastReasoning || '') + delta;
       return [{ type: 'thinking', conversation: conv, composer_id: sessionID, delta }];
     }
-    if ((partType === 'text' || field === 'text') && (props.messageID ? st.assistantMsgs.has(props.messageID) : true)) {
+    const isText = (field === 'text' || (!field && partType === 'text')) && (props.messageID ? st.assistantMsgs.has(props.messageID) : true);
+    if (isText) {
+      st.running = true;
       st.fullText += delta;
       return [{
         type: 'response',
@@ -206,34 +224,33 @@ export function translateEvent(evt, { state: st, conversation: conv }) {
     if (!st.running) return [];
     st.running = false;
 
+    const out = [...closeOpenTools(conv, st, sessionID)];
+    out.push({ type: 'thinking', conversation: conv, subtype: 'completed', composer_id: sessionID });
+
     // Guaranteed non-empty final response so user and voice engine are never left in the dark
     if (!st.fullText.trim()) {
-      if (st.lastError) {
-        st.fullText = st.lastError;
-      } else {
-        st.fullText = "L'action a été exécutée par l'agent.";
-      }
-    }
-
-    return [
-      ...closeOpenTools(conv, st, sessionID),
-      { type: 'thinking', conversation: conv, subtype: 'completed', composer_id: sessionID },
-      {
+      st.fullText = st.lastError || "L'action a été exécutée par l'agent.";
+      out.push({
         type: 'response',
         conversation: conv,
         composer_id: sessionID,
         text: st.fullText,
-      },
+      });
+    }
+
+    out.push(
       {
         type: 'response_complete',
         conversation: conv,
         composer_id: sessionID,
         chat_id: sessionID,
         text: st.fullText,
-        exit: 0,
+        exit: st.lastError ? 1 : 0,
       },
-      { type: 'run_complete', conversation: conv, composer_id: sessionID },
-    ];
+      { type: 'run_complete', conversation: conv, composer_id: sessionID }
+    );
+
+    return out;
   }
 
   return [];

@@ -126,6 +126,11 @@ podman run -d --name "${SLUG}-bridge-opencode" --network "$NET" --replace \
   -e OPENCODE_BRIDGE_TOKEN="$BRIDGE_AUTH_TOKEN" \
   -e HOME=/root \
   -e TOKEN_FILE=/root/.config/opencode-bridge/token \
+  -e GROQ_API_KEY \
+  -e DEEPSEEK_API_KEY \
+  -e ANTHROPIC_API_KEY \
+  -e OPENAI_API_KEY \
+  -e GEMINI_API_KEY \
   -v "$UNIV/sav/opencode-ws:/data/opencode-ws:Z" \
   -v "$UNIV/sav/opencode-bridge:/root/.config/opencode-bridge:Z" \
   localhost/shaper-bridge-opencode:latest
@@ -178,6 +183,8 @@ if [[ "$WITH_HELM" == "1" ]]; then
     -e OPENCODE_BRIDGE_URL="http://127.0.0.1:$OPENCODE_BRIDGE_PORT" \
     -e OPENCODE_BRIDGE_TOKEN="$BRIDGE_AUTH_TOKEN" \
     -e DEFAULT_AGENT_PLUGIN=opencode \
+    -e OPENCODE_MODEL="${OPENCODE_MODEL:-groq/llama-3.3-70b-versatile}" \
+    -e DEFAULT_OPENCODE_MODEL="${OPENCODE_MODEL:-groq/llama-3.3-70b-versatile}" \
     -e AGENT_PLUGINS="opencode|http://127.0.0.1:$OPENCODE_BRIDGE_PORT|$BRIDGE_AUTH_TOKEN" \
     -e DEEPGRAM_API_KEY="$DEEPGRAM_API_KEY" \
     -e GROQ_API_KEY="$GROQ_API_KEY" \

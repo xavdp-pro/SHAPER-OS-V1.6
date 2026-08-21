@@ -4,20 +4,44 @@
 
 export const OPENCODE_FREE_MODELS = [
   {
-    id: 'opencode/nemotron-3-ultra-free',
-    label: 'Nemotron 3 Ultra (Gratuit)',
+    id: 'groq/openai/gpt-oss-120b',
+    label: 'GPT OSS 120B (Groq · ~250 t/s)',
     engines: ['opencode'],
     efforts: ['full'],
-    supportsFast: false,
-    resolve() { return 'opencode/nemotron-3-ultra-free'; },
+    supportsFast: true,
+    resolve() { return 'groq/openai/gpt-oss-120b'; },
   },
   {
-    id: 'opencode/deepseek-v4-flash-free',
-    label: 'DeepSeek V4 Flash (Gratuit)',
+    id: 'groq/openai/gpt-oss-20b',
+    label: 'GPT OSS 20B (Groq · ~500 t/s)',
+    engines: ['opencode'],
+    efforts: ['full'],
+    supportsFast: true,
+    resolve() { return 'groq/openai/gpt-oss-20b'; },
+  },
+  {
+    id: 'opencode/big-pickle',
+    label: 'Big Pickle (OpenCode Gratuit)',
     engines: ['opencode'],
     efforts: ['full'],
     supportsFast: false,
-    resolve() { return 'opencode/deepseek-v4-flash-free'; },
+    resolve() { return 'opencode/big-pickle'; },
+  },
+  {
+    id: 'deepseek/deepseek-chat',
+    label: 'DeepSeek V3 (Direct)',
+    engines: ['opencode'],
+    efforts: ['full'],
+    supportsFast: false,
+    resolve() { return 'deepseek/deepseek-chat'; },
+  },
+  {
+    id: 'deepseek/deepseek-reasoner',
+    label: 'DeepSeek R1 Raisonnement',
+    engines: ['opencode'],
+    efforts: ['full'],
+    supportsFast: false,
+    resolve() { return 'deepseek/deepseek-reasoner'; },
   },
   {
     id: 'opencode/nemotron-3.5-lightning-free',
@@ -183,10 +207,9 @@ export const CURSOR_MODEL_FAMILIES = MODEL_FAMILIES;
 
 export const DEFAULT_MODEL = process.env.DEFAULT_OPENCODE_MODEL
   || process.env.OPENCODE_MODEL
-  || (process.env.DEFAULT_AGENT_PLUGIN === 'opencode' ? 'opencode/deepseek-v4-flash-free' : null)
   || process.env.DEFAULT_AGY_MODEL
   || process.env.DEFAULT_MODEL
-  || 'opencode/deepseek-v4-flash-free';
+  || 'groq/llama-3.3-70b-versatile';
 
 export const DEFAULT_CURSOR_MODEL = DEFAULT_MODEL;
 
