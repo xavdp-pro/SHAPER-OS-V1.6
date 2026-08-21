@@ -10,3 +10,4 @@ Containerized modern Web Chat & Console interface (React 19 + Express 5) allowin
 4. **Clean Sovereign Users (Zero Legacy Demo Accounts)**: Third-party demo accounts (e.g. `ivonne`, legacy demo guests) are strictly forbidden from default production/development databases and registries.
 5. **Public Exposure**: Edge routing via Cloudflare Tunnel (`cloudflared`) on port `8650`.
 6. **Resilience**: Operates with MariaDB auth, audit logging, and sovereign session persistence.
+7. **Free OpenCode Models Catalogue & Groq Boundary**: The model selector displays only confirmed active free models from OpenCode (`opencode/*`) and direct provider keys (`deepseek/*`). Groq models (`groq/*`) must never be exposed as general agent LLMs in Helm and are strictly dedicated to background acknowledgment synthesis.

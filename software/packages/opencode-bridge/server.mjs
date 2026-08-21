@@ -45,7 +45,7 @@ const SESSIONS_FILE = process.env.SESSIONS_FILE || path.join(CFG_DIR, 'sessions.
 const WS_BASE = process.env.OPENCODE_WS_BASE || path.join(os.homedir(), 'ws/opencode');
 const OPT_BRIDGE_ROOT = process.env.OPT_BRIDGE_ROOT || '/opt/bridge';
 const AGENT_BIN = process.env.OPENCODE_BIN || `${OPT_BRIDGE_ROOT}/opencode/bin/opencode`;
-const MODEL = process.env.OPENCODE_MODEL || 'opencode/deepseek-v4-flash-free';
+const MODEL = process.env.OPENCODE_MODEL || 'opencode/nemotron-3.5-lightning-free';
 /** Internal port of the headless `opencode serve` child (never exposed). */
 const SERVE_PORT = Number(process.env.OPENCODE_SERVE_PORT || 4341);
 const SERVE_URL = `http://127.0.0.1:${SERVE_PORT}`;

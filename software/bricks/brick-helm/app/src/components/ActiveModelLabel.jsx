@@ -23,10 +23,13 @@ export default function ActiveModelLabel({
     const families = modelFamilies.length
     ? modelFamilies
     : [
-      { id: 'groq/openai/gpt-oss-120b', label: 'GPT OSS 120B (Groq)', speed: '~250 t/s · Ultra Rapide' },
-      { id: 'groq/openai/gpt-oss-20b', label: 'GPT OSS 20B (Groq)', speed: '~500 t/s · Instantané' },
-      { id: 'opencode/big-pickle', label: 'Big Pickle (Gratuit)', speed: '~75 t/s · Gratuit' },
-      { id: 'opencode/deepseek-v4-flash-free', label: 'DeepSeek V4 Flash (OpenCode)', speed: '~180 t/s · Flash' },
+      { id: 'opencode/nemotron-3.5-lightning-free', label: 'Nemotron 3.5 Lightning', speed: '~100 t/s · Gratuit' },
+      { id: 'opencode/big-pickle', label: 'Big Pickle', speed: '~75 t/s · Gratuit' },
+      { id: 'opencode/hy3-free', label: 'HY3', speed: '~80 t/s · Gratuit' },
+      { id: 'opencode/mimo-v2.5-free', label: 'Mimo V2.5', speed: '~75 t/s · Gratuit' },
+      { id: 'opencode/nemotron-3-ultra-free', label: 'Nemotron 3 Ultra', speed: '~80 t/s · Gratuit' },
+      { id: 'opencode/muse-spark-1.2-contributor-free', label: 'Muse Spark 1.2', speed: '~60 t/s · Gratuit' },
+      { id: 'opencode/x-preview-f-free', label: 'X-Preview', speed: '~90 t/s · Gratuit' },
       { id: 'deepseek/deepseek-chat', label: 'DeepSeek V3 (Direct)', speed: '~70 t/s · Précis' },
       { id: 'deepseek/deepseek-reasoner', label: 'DeepSeek R1 Raisonnement', speed: '~45 t/s · Raisonnement' },
     ];
