@@ -7,7 +7,6 @@ import { useLocale } from '../../context/LocaleContext.jsx';
 const CLI_MODELS = {
   opencode: [
     { id: 'opencode/nemotron-3-ultra-free', label: 'Nemotron 3 Ultra (Gratuit · 1M Ctx)' },
-    { id: 'opencode/deepseek-v4-flash-free', label: 'DeepSeek V4 Flash (Gratuit · Ultra Rapide)' },
     { id: 'opencode/nemotron-3.5-lightning-free', label: 'Nemotron 3.5 Lightning (Gratuit · 250 t/s)' },
     { id: 'opencode/mimo-v2.5-free', label: 'MiMo V2.5 (Gratuit · Multimodal)' },
     { id: 'opencode/laguna-s-2.1-free', label: 'Laguna S 2.1 (Gratuit · Docs)' },

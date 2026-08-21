@@ -29,7 +29,7 @@ In-memory async job queue with progress tracking and SSE streaming — no extern
     "message": "required instruction",
     "conversation": "optional-session-name",
     "bridgeUrl": "http://127.0.0.1:4340",
-    "model": "opencode/deepseek-v4-flash-free",
+    "model": "opencode/nemotron-3.5-lightning-free",
     "context": "optional extra instructions"
   }
 }

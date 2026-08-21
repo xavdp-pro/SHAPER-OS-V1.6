@@ -10,7 +10,7 @@ import { fileURLToPath } from 'node:url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-export const FREE_MODEL = 'opencode/deepseek-v4-flash-free';
+export const FREE_MODEL = 'opencode/nemotron-3.5-lightning-free';
 
 export function normalizeConversationName(name) {
   if (!name || typeof name !== 'string') return 'default';

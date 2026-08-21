@@ -4,7 +4,7 @@ import { FREE_MODEL, normalizeConversationName, buildOpencodeSpawnEnv, OpencodeB
 
 describe('bridge-opencode', () => {
   it('uses free default model', () => {
-    assert.equal(FREE_MODEL, 'opencode/deepseek-v4-flash-free');
+    assert.equal(FREE_MODEL, 'opencode/nemotron-3.5-lightning-free');
   });
 
   it('normalizes conversation names', () => {
@@ -16,11 +16,11 @@ describe('bridge-opencode', () => {
       PATH: '/bin',
       GEMINI_API_KEY: 'AIzaX',
       ANTIGRAVITY_API_KEY: 'AQ.x',
-      OPENCODE_MODEL: 'opencode/deepseek-v4-flash-free',
+      OPENCODE_MODEL: 'opencode/nemotron-3.5-lightning-free',
     });
     assert.equal(env.GEMINI_API_KEY, undefined);
     assert.equal(env.ANTIGRAVITY_API_KEY, undefined);
-    assert.equal(env.OPENCODE_MODEL, 'opencode/deepseek-v4-flash-free');
+    assert.equal(env.OPENCODE_MODEL, 'opencode/nemotron-3.5-lightning-free');
   });
 
   it('health reports freeTier in stub mode', async () => {

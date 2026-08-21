@@ -29,7 +29,7 @@
       "intent": "../../bricks/brick-bridge-opencode/INTENT.md",
       "package": "@shaper/bridge-opencode",
       "role": "Free OpenCode AI bridge",
-      "specialize": { "how": "Default model opencode/deepseek-v4-flash-free" }
+      "specialize": { "how": "Default model opencode/nemotron-3.5-lightning-free" }
     },
     "queue": {
       "ref": "../../bricks/brick-queue",

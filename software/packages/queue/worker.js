@@ -9,7 +9,7 @@
  *     "message": "What to do (required)",
  *     "conversation": "optional-slug",
  *     "bridgeUrl": "http://127.0.0.1:4340",
- *     "model": "opencode/deepseek-v4-flash-free",
+ *     "model": "opencode/nemotron-3.5-lightning-free",
  *     "context": "optional instructions"
  *   },
  *   "totalSteps": 2

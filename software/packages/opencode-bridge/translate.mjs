@@ -25,7 +25,7 @@ export function createRunState() {
 }
 
 /** Split "provider/model" into the shape prompt_async expects. */
-export function splitModel(spec, fallback = 'opencode/deepseek-v4-flash-free') {
+export function splitModel(spec, fallback = 'opencode/nemotron-3.5-lightning-free') {
   const raw = String(spec || fallback).trim();
   const i = raw.indexOf('/');
   if (i <= 0) return { providerID: 'opencode', modelID: raw };

@@ -12,7 +12,7 @@ describe('queue-worker agent.inject', () => {
       return {
         ok: true,
         status: 200,
-        json: async () => ({ ok: true, runId: 'run-test-1', conversation: 'c1', model: 'opencode/deepseek-v4-flash-free' }),
+        json: async () => ({ ok: true, runId: 'run-test-1', conversation: 'c1', model: 'opencode/nemotron-3.5-lightning-free' }),
       };
     };
     const worker = startQueueAgentWorker({

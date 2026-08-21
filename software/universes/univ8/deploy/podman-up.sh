@@ -87,7 +87,7 @@ podman run -d --name univ8-logger --network "$NET" --replace \
   localhost/shaper-logger:latest
 
 echo "[podman-up] 3. Starting univ8-bridge-opencode on :$OPENCODE_BRIDGE_PORT (OpenCode inside image)..."
-export OPENCODE_MODEL="${OPENCODE_MODEL:-opencode/deepseek-v4-flash-free}"
+export OPENCODE_MODEL="${OPENCODE_MODEL:-opencode/nemotron-3.5-lightning-free}"
 podman run -d --name univ8-bridge-opencode --network "$NET" --replace \
   -e OPENCODE_BRIDGE_PORT="$OPENCODE_BRIDGE_PORT" \
   -e OPENCODE_BRIDGE_BIND=0.0.0.0 \
