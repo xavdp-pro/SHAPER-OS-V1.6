@@ -1899,6 +1899,20 @@ export default function Dashboard() {
           <div className="shrink-0 flex items-center gap-1 sm:gap-1.5">
             <InteractionModeSelector value={interactionMode} onChange={setMobileMode} />
             <LanguageSelector compact />
+            {!hideChatVisual && (
+              <ConsoleHelpButton
+                highlight={helpHighlight}
+                onDismiss={() => {
+                  const prime = getCompletedPrimeRun(timeline);
+                  dismissHelpNudge(prime?.id);
+                }}
+                onClick={() => {
+                  const prime = getCompletedPrimeRun(timeline);
+                  dismissHelpNudge(prime?.id);
+                  setHelpOpen(true);
+                }}
+              />
+            )}
             <HeaderActionsMenu
               filters={viewFilters}
               onToggleFilter={handleToggleFilter}
@@ -1922,36 +1936,20 @@ export default function Dashboard() {
               timelinePagination={timelinePagination}
               onToggleTimelinePagination={toggleTimelinePagination}
             />
+            {!hideChatVisual && (
+              <button
+                type="button"
+                onClick={() => setWorkspaceOpen((v) => !v)}
+                className={`hidden md:inline-flex items-center justify-center w-8 h-8 rounded-lg transition cursor-pointer shrink-0 ${
+                  workspaceOpen ? 'bg-brand-600/25 text-brand-200' : 'text-slate-400 hover:bg-white/10 hover:text-white'
+                }`}
+                title="Panneau projet (aperçu / navigateur)"
+                aria-label="Panneau projet"
+              >
+                <PanelRight size={17} />
+              </button>
+            )}
           </div>
-          {!hideChatVisual && (
-          <>
-          <div className="hidden md:block">
-            <ConsoleHelpButton
-              highlight={helpHighlight}
-              onDismiss={() => {
-                const prime = getCompletedPrimeRun(timeline);
-                dismissHelpNudge(prime?.id);
-              }}
-              onClick={() => {
-                const prime = getCompletedPrimeRun(timeline);
-                dismissHelpNudge(prime?.id);
-                setHelpOpen(true);
-              }}
-            />
-          </div>
-          <button
-            type="button"
-            onClick={() => setWorkspaceOpen((v) => !v)}
-            className={`hidden md:inline-flex items-center justify-center w-8 h-8 rounded-lg transition cursor-pointer shrink-0 ${
-              workspaceOpen ? 'bg-brand-600/25 text-brand-200' : 'text-slate-400 hover:bg-white/10 hover:text-white'
-            }`}
-            title="Panneau projet (aperçu / navigateur)"
-            aria-label="Panneau projet"
-          >
-            <PanelRight size={17} />
-          </button>
-          </>
-          )}
         </header>
 
         <div className="shrink-0 px-3 pt-2 md:hidden">
