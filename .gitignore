@@ -13,6 +13,12 @@ software/universes/*/deploy/univ7.env
 **/deploy/env
 *.enc
 *.log
+*.jsonl
+log/
+logs/
+sav/
+**/sav/
+**/log/
 .DS_Store
 dist/
 tmp/
