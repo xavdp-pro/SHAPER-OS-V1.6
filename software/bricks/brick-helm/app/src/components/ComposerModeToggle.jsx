@@ -27,16 +27,18 @@ export default function ComposerModeToggle({ compact = false, menu = false }) {
   } = useSettings();
   const [saving, setSaving] = useState(false);
 
-  const families = modelFamilies.length
+    const families = modelFamilies.length
     ? modelFamilies
     : [
-      { id: 'opencode/nemotron-3-ultra-free', label: 'Nemotron 3 Ultra (Gratuit)', efforts: ['full'], supportsFast: false },
-      { id: 'opencode/deepseek-v4-flash-free', label: 'DeepSeek V4 Flash (Gratuit)', efforts: ['full'], supportsFast: false },
+      { id: 'groq/openai/gpt-oss-120b', label: 'GPT OSS 120B (Groq · ~250 t/s)', efforts: ['full'], supportsFast: true },
+      { id: 'groq/openai/gpt-oss-20b', label: 'GPT OSS 20B (Groq · ~500 t/s)', efforts: ['full'], supportsFast: true },
+      { id: 'opencode/big-pickle', label: 'Big Pickle (OpenCode Gratuit)', efforts: ['full'], supportsFast: false },
+      { id: 'opencode/deepseek-v4-flash-free', label: 'DeepSeek V4 Flash (OpenCode)', efforts: ['full'], supportsFast: false },
+      { id: 'deepseek/deepseek-chat', label: 'DeepSeek V3 (Direct)', efforts: ['full'], supportsFast: false },
+      { id: 'deepseek/deepseek-reasoner', label: 'DeepSeek R1 Raisonnement', efforts: ['full'], supportsFast: false },
       { id: 'opencode/nemotron-3.5-lightning-free', label: 'Nemotron 3.5 Lightning (Gratuit)', efforts: ['full'], supportsFast: false },
       { id: 'opencode/mimo-v2.5-free', label: 'Mimo V2.5 (Gratuit)', efforts: ['full'], supportsFast: false },
-      { id: 'opencode/laguna-s-2.1-free', label: 'Laguna S 2.1 (Gratuit)', efforts: ['full'], supportsFast: false },
       { id: 'opencode/hy3-free', label: 'HY3 (Gratuit)', efforts: ['full'], supportsFast: false },
-      { id: 'opencode/big-pickle', label: 'Big Pickle (Gratuit)', efforts: ['full'], supportsFast: false },
     ];
 
   const current = families.find((f) => f.id === modelFamily) || families[0];

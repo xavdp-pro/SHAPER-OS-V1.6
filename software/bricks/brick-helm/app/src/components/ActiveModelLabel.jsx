@@ -26,6 +26,7 @@ export default function ActiveModelLabel({
       { id: 'groq/openai/gpt-oss-120b', label: 'GPT OSS 120B (Groq)', speed: '~250 t/s · Ultra Rapide' },
       { id: 'groq/openai/gpt-oss-20b', label: 'GPT OSS 20B (Groq)', speed: '~500 t/s · Instantané' },
       { id: 'opencode/big-pickle', label: 'Big Pickle (Gratuit)', speed: '~75 t/s · Gratuit' },
+      { id: 'opencode/deepseek-v4-flash-free', label: 'DeepSeek V4 Flash (OpenCode)', speed: '~180 t/s · Flash' },
       { id: 'deepseek/deepseek-chat', label: 'DeepSeek V3 (Direct)', speed: '~70 t/s · Précis' },
       { id: 'deepseek/deepseek-reasoner', label: 'DeepSeek R1 Raisonnement', speed: '~45 t/s · Raisonnement' },
     ];

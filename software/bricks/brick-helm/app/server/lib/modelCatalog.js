@@ -28,6 +28,14 @@ export const OPENCODE_FREE_MODELS = [
     resolve() { return 'opencode/big-pickle'; },
   },
   {
+    id: 'opencode/deepseek-v4-flash-free',
+    label: 'DeepSeek V4 Flash (OpenCode)',
+    engines: ['opencode'],
+    efforts: ['full'],
+    supportsFast: false,
+    resolve() { return 'opencode/deepseek-v4-flash-free'; },
+  },
+  {
     id: 'deepseek/deepseek-chat',
     label: 'DeepSeek V3 (Direct)',
     engines: ['opencode'],
