@@ -406,13 +406,38 @@ async function runAgent(name, message, opts = {}) {
   saveSessions(reg);
 
   // prompt_async returns immediately; the reply arrives on the event stream.
-  await serveFetch(`/session/${sessionID}/prompt_async`, {
-    method: 'POST',
-    body: JSON.stringify({
-      model,
-      parts: [{ type: 'text', text: message }],
-    }),
-  });
+  try {
+    await serveFetch(`/session/${sessionID}/prompt_async`, {
+      method: 'POST',
+      body: JSON.stringify({
+        model,
+        parts: [{ type: 'text', text: message }],
+      }),
+    });
+  } catch (err) {
+    const msg = String(err.message || '').toLowerCase();
+    if (msg.includes('compact') || msg.includes('too large') || msg.includes('limit') || msg.includes('context') || msg.includes('400')) {
+      console.warn(`[opencode-bridge] Session ${sessionID} saturated (${err.message}) — creating fresh session for ${conv}`);
+      sessionToConv.delete(sessionID);
+      runStates.delete(sessionID);
+      setChatId(conv, null);
+      const freshSessionID = await ensureSession(conv, cwd, model);
+      sessionToConv.set(freshSessionID, conv);
+      const freshSt = stateFor(freshSessionID);
+      freshSt.fullText = '';
+      freshSt.running = true;
+
+      await serveFetch(`/session/${freshSessionID}/prompt_async`, {
+        method: 'POST',
+        body: JSON.stringify({
+          model,
+          parts: [{ type: 'text', text: message }],
+        }),
+      });
+      return { chatId: freshSessionID, runId };
+    }
+    throw err;
+  }
 
   return { chatId: sessionID, runId };
 }
